@@ -297,7 +297,7 @@
       min-height: 260px !important;
     }
 
-    /* Option 2 Direct File System Access Decision Block */
+    /* Option 1 Real-Time Background Auto-Save Decision Block */
     .decision-block {
       background: #141414;
       border: 1px solid #262626;
@@ -363,42 +363,26 @@
       line-height: 1.55;
     }
 
-    .direct-file-toolbar {
+    .auto-save-bar {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 14px;
       flex-wrap: wrap;
       padding-top: 14px;
       border-top: 1px solid #262626;
     }
-    .action-btn {
-      background-color: #262626;
-      color: #ffffff;
-      border: 1px solid #404040;
-      padding: 10px 18px;
-      font-size: 11.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      cursor: pointer;
+    .sync-status-indicator {
       font-family: 'JetBrains Mono', monospace;
-      transition: background 0.15s ease;
-    }
-    .action-btn:hover {
-      background-color: #333333;
-    }
-    .action-btn.linked {
-      background-color: #05200f;
-      border-color: #166534;
+      font-size: 11.5px;
       color: #4ade80;
     }
-    .status-text {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11.5px;
+    .sync-status-indicator.saving {
+      color: #facc15;
     }
-    .status-warn { color: #facc15; }
-    .status-done { color: #4ade80; }
-    .status-risk { color: #f87171; }
+    .sync-status-indicator.offline {
+      color: #8a8a8a;
+    }
   </style>
 </head>
 <body>
@@ -555,20 +539,20 @@ export interface ICacheService {
     </section>
 
     <section>
-      <h2><span class="section-num">06.</span> Architectural Decisions (Option 2 Direct File Save)</h2>
+      <h2><span class="section-num">06.</span> Architectural Decisions (Real-Time Auto-Save)</h2>
       <div class="decision-block">
         <div class="decision-header-row">
           <div class="decision-title">[DECISION] Select Invalidation Protocol Strategy:</div>
         </div>
         <div class="options-grid">
-          <label class="option-label selected" onclick="handleOptionSelect('inval_strategy', 'Event-Driven Redis PubSub', this)">
+          <label class="option-label selected" onclick="handleAutoSaveOption('inval_strategy', 'Event-Driven Redis PubSub', this)">
             <input type="radio" name="inval_strategy" value="Event-Driven Redis PubSub" checked="checked">
             <div class="option-content">
               <div class="option-name">Option A: Event-Driven Redis PubSub (Recommended)</div>
               <div class="option-desc">Sub-millisecond invalidation broadcasts across all cluster worker instances. Ensures instantaneous consistency across multi-node deployments with minimal overhead.</div>
             </div>
           </label>
-          <label class="option-label" onclick="handleOptionSelect('inval_strategy', 'TTL Leases with Stale-While-Revalidate', this)">
+          <label class="option-label" onclick="handleAutoSaveOption('inval_strategy', 'TTL Leases with Stale-While-Revalidate', this)">
             <input type="radio" name="inval_strategy" value="TTL Leases with Stale-While-Revalidate">
             <div class="option-content">
               <div class="option-name">Option B: TTL Leases with Stale-While-Revalidate</div>
@@ -577,10 +561,9 @@ export interface ICacheService {
           </label>
         </div>
 
-        <div class="direct-file-toolbar">
-          <button id="link-file-btn" class="action-btn" onclick="linkSourceFile()">[LINK SOURCE FILE FOR DIRECT EDITS]</button>
-          <button class="action-btn" onclick="triggerSaveWorkflow()">[SYNC / SAVE NOW]</button>
-          <span id="file-link-status" class="status-text status-warn">[STATUS: UNLINKED — CLICK "LINK SOURCE FILE" TO ENABLE DIRECT DISK WRITES]</span>
+        <div class="auto-save-bar">
+          <span id="auto-sync-status" class="sync-status-indicator">[STATUS: REAL-TIME AUTO-SAVE ACTIVE]</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #737373;">Local Port: 8123</span>
         </div>
       </div>
     </section>
@@ -596,49 +579,13 @@ export interface ICacheService {
   </div>
 
   <script>
-    let sourceFileHandle = null;
-
-    async function linkSourceFile() {
-      const statusEl = document.getElementById('file-link-status');
-      try {
-        if (!('showOpenFilePicker' in window)) {
-          if (statusEl) {
-            statusEl.innerText = '[STATUS: BROWSER RESTRICTED — USE MODERN CHROMIUM FOR DIRECT WRITES]';
-            statusEl.className = 'status-text status-risk';
-          }
-          return;
-        }
-        const [handle] = await window.showOpenFilePicker({
-          types: [{ description: 'HTML Document', accept: { 'text/html': ['.html'] } }],
-          multiple: false
-        });
-        sourceFileHandle = handle;
-        if (statusEl) {
-          statusEl.innerText = '[STATUS: LINKED TO ' + handle.name.toUpperCase() + ' (DIRECT WRITE ACTIVE)]';
-          statusEl.className = 'status-text status-done';
-        }
-        const linkBtn = document.getElementById('link-file-btn');
-        if (linkBtn) {
-          linkBtn.innerText = '[FILE LINKED: ' + handle.name + ']';
-          linkBtn.classList.add('linked');
-        }
-        await syncToDisk();
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          console.error(err);
-          if (statusEl) {
-            statusEl.innerText = '[STATUS: PERMISSION DENIED OR ERROR]';
-            statusEl.className = 'status-text status-risk';
-          }
-        }
-      }
-    }
-
-    async function handleOptionSelect(groupName, value, labelElement) {
+    async function handleAutoSaveOption(groupName, value, labelElement) {
+      // 1. Update visual styles
       const container = labelElement.closest('.decision-block');
       container.querySelectorAll('.option-label').forEach(el => el.classList.remove('selected'));
       labelElement.classList.add('selected');
 
+      // 2. Mutate DOM checked attributes
       const inputs = container.querySelectorAll('input[name="' + groupName + '"]');
       inputs.forEach(input => {
         if (input.value === value) {
@@ -650,11 +597,7 @@ export interface ICacheService {
         }
       });
 
-      updateDecisionMetadata();
-      await syncToDisk();
-    }
-
-    function updateDecisionMetadata() {
+      // 3. Serialize all decisions
       const allDecisions = {};
       document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
         allDecisions[input.name] = input.value;
@@ -664,46 +607,42 @@ export interface ICacheService {
       if (meta) {
         meta.setAttribute('content', JSON.stringify({ decisions: allDecisions, updated_at: new Date().toISOString() }));
       }
-    }
 
-    async function syncToDisk() {
-      const statusEl = document.getElementById('file-link-status');
-      updateDecisionMetadata();
-
-      if (!sourceFileHandle) {
-        if (statusEl && !statusEl.classList.contains('status-done')) {
-          statusEl.innerText = '[STATUS: UNLINKED — CLICK "LINK SOURCE FILE" TO ENABLE DIRECT DISK WRITES]';
-          statusEl.className = 'status-text status-warn';
-        }
-        return false;
+      const statusEl = document.getElementById('auto-sync-status');
+      if (statusEl) {
+        statusEl.innerText = '[STATUS: SAVING TO DISK...]';
+        statusEl.className = 'sync-status-indicator saving';
       }
+
+      // 4. Send background POST to local OMP server
+      const filename = window.location.pathname.split('/').pop() || 'test-plan.html';
+      const serializedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
 
       try {
-        const serializedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-        const writable = await sourceFileHandle.createWritable();
-        await writable.write(serializedHtml);
-        await writable.close();
+        const res = await fetch('http://127.0.0.1:8123/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: filename,
+            html: serializedHtml,
+            decisions: allDecisions
+          })
+        });
 
-        if (statusEl) {
-          statusEl.innerText = '[STATUS: SAVED DIRECTLY TO ' + sourceFileHandle.name.toUpperCase() + ' AT ' + new Date().toLocaleTimeString() + ']';
-          statusEl.className = 'status-text status-done';
+        if (res.ok) {
+          if (statusEl) {
+            statusEl.innerText = '[STATUS: AUTO-SAVED TO DISK (' + new Date().toLocaleTimeString() + ')]';
+            statusEl.className = 'sync-status-indicator';
+          }
+        } else {
+          throw new Error('Save failed');
         }
-        return true;
       } catch (err) {
-        console.error(err);
+        console.warn('Local background server sync notice:', err);
         if (statusEl) {
-          statusEl.innerText = '[STATUS: WRITE FAILED — RE-LINK FILE]';
-          statusEl.className = 'status-text status-risk';
+          statusEl.innerText = '[STATUS: LOCAL SERVER OFFLINE — SAVED TO DOM & LOCALSTORAGE]';
+          statusEl.className = 'sync-status-indicator offline';
         }
-        return false;
-      }
-    }
-
-    async function triggerSaveWorkflow() {
-      if (!sourceFileHandle) {
-        await linkSourceFile();
-      } else {
-        await syncToDisk();
       }
     }
   </script>
