@@ -1,13 +1,14 @@
-# Minimalist HTML Plan & Review Skill for OMP (`/html`)
+# Detailed HTML Plan & Review Skill for OMP (`/html`)
 
-A specialized, minimalist plugin/skill for Oh My Pi (omp) to generate structured, dark-gray HTML implementation plans, architecture designs, reviews, and decision matrices.
+A specialized, comprehensive skill and plugin for Oh My Pi (omp) to generate structured, dark-gray HTML implementation plans, architecture designs, reviews, and decision matrices with full technical depth.
 
-## Design Highlights
+## Key Features & Standards
 
 - **Plain Dark Gray Background**: The entire page background is clean dark gray (`#141416`). No isolated central card container or shadow boxes.
 - **Sharp Brutalist Minimalism**: 0px border-radius across all elements (callouts, buttons, tables, badges, code blocks).
 - **Strictly Zero Emojis**: Clean text indicators (`[PLAN]`, `[REVIEW]`, `[WARNING]`, `[ERROR]`, `[STATUS]`, `[DECISION]`).
-- **Large High-Visibility Diagrams**: Mermaid.js charts rendered with high contrast, large readable node fonts, and scaled to full width.
+- **Deep Technical Rigor & Detail**: Complete architectural context, concrete TypeScript/schema code blocks, thorough execution matrices, in-depth failure mode analysis, and comprehensive verification specifications.
+- **Large High-Visibility Diagrams**: Mermaid.js charts rendered with high contrast, large readable node fonts (`14px`), and scaled to full container width.
 - **Clean Tables & Code Highlighting**: Monospace code badges, structured data tables.
 - **High-Contrast Callouts**: Yellow alerts for warnings, red alerts for blockers/errors, cyan for notes.
 - **Interactive Decision Matrix**: Radio/checkbox selectors with a 1-click `[COPY DECISION TO CLIPBOARD]` button.
@@ -37,5 +38,5 @@ Or ask the agent in natural conversation:
 The agent will:
 1. Create `omp-html/.gitignore` (if not already present).
 2. Generate the standalone dark-gray HTML document in `omp-html/<plan-slug>.html`.
-3. Provide a terse summary and the clickable browser link:
+3. Provide a structured summary and the clickable browser link:
    `file:///C:/Users/Aryan/projects/MyProject/omp-html/plan-auth-refactor.html`

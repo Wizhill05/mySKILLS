@@ -53,20 +53,20 @@
       background-color: #141416;
       color: #ececed;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      line-height: 1.6;
+      line-height: 1.65;
       padding: 40px 32px;
     }
 
     .content {
-      max-width: 1080px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
     /* Header */
     .header {
       border-bottom: 1px solid #27272a;
-      padding-bottom: 20px;
-      margin-bottom: 32px;
+      padding-bottom: 24px;
+      margin-bottom: 36px;
     }
     .header-badge {
       display: inline-block;
@@ -81,16 +81,16 @@
       margin-bottom: 12px;
     }
     h1 {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       letter-spacing: -0.4px;
     }
     .meta-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 24px;
       font-size: 13px;
       color: #a1a1aa;
     }
@@ -102,36 +102,46 @@
 
     /* Headings */
     h2 {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #ffffff;
-      margin: 36px 0 16px 0;
+      margin: 40px 0 16px 0;
       border-bottom: 1px solid #27272a;
       padding-bottom: 8px;
     }
     h3 {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 14.5px;
+      font-weight: 700;
       color: #e4e4e7;
-      margin: 20px 0 8px 0;
+      margin: 24px 0 10px 0;
+    }
+    h4 {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #a1a1aa;
+      margin: 16px 0 6px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     p {
       color: #d4d4d8;
-      font-size: 14px;
-      margin-bottom: 14px;
+      font-size: 14.5px;
+      margin-bottom: 16px;
+      line-height: 1.7;
     }
 
     ul, ol {
-      margin-left: 20px;
-      margin-bottom: 16px;
+      margin-left: 22px;
+      margin-bottom: 18px;
       font-size: 14px;
     }
     li {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       color: #d4d4d8;
+      line-height: 1.65;
     }
 
     code {
@@ -145,9 +155,10 @@
     pre {
       background-color: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 16px;
+      padding: 18px;
       overflow-x: auto;
-      margin: 16px 0;
+      margin: 18px 0;
+      line-height: 1.5;
     }
     pre code {
       background: transparent;
@@ -159,16 +170,18 @@
 
     /* Callouts */
     .callout {
-      padding: 14px 18px;
-      margin: 18px 0;
-      font-size: 13.5px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 14px;
       border: 1px solid;
+      line-height: 1.65;
     }
     .callout-title {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
     }
     .callout-warning {
       background-color: #231c07;
@@ -193,13 +206,15 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 22px 0;
       font-size: 13.5px;
     }
     th, td {
       border: 1px solid #27272a;
-      padding: 11px 14px;
+      padding: 12px 16px;
       text-align: left;
+      vertical-align: top;
+      line-height: 1.6;
     }
     th {
       background-color: #1c1c20;
@@ -223,7 +238,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 2px 7px;
+      padding: 3px 8px;
       border: 1px solid;
     }
     .badge-pending { background: #1c1c20; border-color: #333338; color: #a1a1aa; }
@@ -235,32 +250,32 @@
     .diagram-container {
       background-color: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 28px 20px;
-      margin: 20px 0;
+      padding: 30px 24px;
+      margin: 24px 0;
       overflow-x: auto;
       display: flex;
       justify-content: center;
     }
     .mermaid {
       width: 100%;
-      min-height: 240px;
+      min-height: 260px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .mermaid svg {
       width: 100% !important;
-      max-width: 980px !important;
+      max-width: 1020px !important;
       height: auto !important;
-      min-height: 220px !important;
+      min-height: 240px !important;
     }
 
     /* Interactive Decision Cards */
     .decision-block {
       background: #18181c;
       border: 1px solid #27272a;
-      padding: 20px;
-      margin: 24px 0;
+      padding: 24px;
+      margin: 28px 0;
     }
     .decision-title {
       font-size: 14px;
@@ -268,19 +283,19 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #ffffff;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .options-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
     .option-label {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      padding: 14px 16px;
+      gap: 14px;
+      padding: 16px 18px;
       background: #141416;
       border: 1px solid #27272a;
       cursor: pointer;
@@ -290,27 +305,28 @@
       background: #1c1c20;
     }
     .option-label input {
-      margin-top: 3px;
+      margin-top: 4px;
     }
     .option-content {
       flex: 1;
     }
     .option-name {
       font-weight: 700;
-      font-size: 13.5px;
+      font-size: 14px;
       color: #ffffff;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .option-desc {
-      font-size: 12.5px;
+      font-size: 13px;
       color: #a1a1aa;
+      line-height: 1.55;
     }
 
     .copy-button {
       background-color: #27272a;
       color: #ffffff;
       border: 1px solid #3f3f46;
-      padding: 10px 18px;
+      padding: 10px 20px;
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
@@ -322,31 +338,149 @@
     }
     .copy-preview {
       font-family: ui-monospace, monospace;
-      font-size: 12px;
+      font-size: 12.5px;
       background: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 10px 14px;
+      padding: 12px 16px;
       color: #a1a1aa;
-      margin-top: 12px;
+      margin-top: 14px;
       white-space: pre-wrap;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
   <div class="content">
     <header class="header">
-      <span class="header-badge">{{TYPE}}</span>
-      <h1>{{TITLE}}</h1>
+      <span class="header-badge">[PLAN] IMPLEMENTATION</span>
+      <h1>{{Plan Title}}</h1>
       <div class="meta-row">
-        <span class="meta-item">DATE: {{DATE}}</span>
-        <span class="meta-item">STATUS: <span class="badge badge-progress">{{STATUS}}</span></span>
-        <span class="meta-item">TARGET: <code>{{PROJECT_MODULE}}</code></span>
+        <span class="meta-item">DATE: {{Date}}</span>
+        <span class="meta-item">STATUS: <span class="badge badge-progress">IN REVIEW</span></span>
+        <span class="meta-item">TARGET: <code>{{Project / Module}}</code></span>
       </div>
     </header>
 
-    <main>
-      <!-- Content Sections Injected Here -->
-    </main>
+    <section>
+      <h2>1. Architecture Context & Problem Statement</h2>
+      <p>{{Comprehensive technical background explaining the architecture, motivations, current bottlenecks, and target end-state.}}</p>
+    </section>
+
+    <section>
+      <h2>2. System Topology & Data Flow</h2>
+      <div class="diagram-container">
+        <div class="mermaid">
+          graph TD
+            A[Client Layer] -->|Request Payload| B[Gateway / Ingress Router]
+            B --> C{Authentication & Rate Limit}
+            C -->|Authorized| D[Domain Controller]
+            C -->|Rejected| E[401/429 Response]
+            D --> F[Service Engine]
+            F --> G[(Primary State Store)]
+            F --> H[(Cache / PubSub)]
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Technical Specifications & Interface Contracts</h2>
+      <p>{{Detailed interface definitions, data models, schemas, and contract guarantees.}}</p>
+      <pre><code>interface ServiceContract {
+  id: string;
+  payload: Record&lt;string, unknown&gt;;
+  timestamp: number;
+  status: "idle" | "running" | "completed" | "failed";
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>4. Execution Phases & File Modifications</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 80px;">Phase</th>
+            <th>Scope & Detailed Implementation Steps</th>
+            <th style="width: 280px;">Files Touched & Symbols</th>
+            <th style="width: 130px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>01</strong></td>
+            <td>
+              <strong>Schema Foundation & Types</strong><br>
+              Define core data contracts, request validation schemas, and database entity models.
+            </td>
+            <td><code>src/types/domain.ts</code><br><code>src/schemas/validation.ts</code></td>
+            <td><span class="badge badge-pending">PENDING</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. Risk Assessment & Failure Modes</h2>
+      <div class="callout callout-warning">
+        <div class="callout-title">[WARNING] Backwards Compatibility Risk</div>
+        Existing clients sending legacy payloads must be handled via fallback parser in <code>src/middleware/transform.ts</code> to prevent 400 Bad Request disruptions.
+      </div>
+      <div class="callout callout-error">
+        <div class="callout-title">[ERROR] Critical Concurrency Hazard</div>
+        Unsynchronized state updates across multiple worker instances could trigger race conditions during reconciliation. A distributed Redis lock (Redlock) must be acquired before state commit.
+      </div>
+    </section>
+
+    <section>
+      <h2>6. Architecture Decisions & Trade-Offs</h2>
+      <div class="decision-block">
+        <div class="decision-title">[DECISION] Select Distributed Locking Backend:</div>
+        <div class="options-grid">
+          <label class="option-label">
+            <input type="radio" name="lock_backend" value="Redis Redlock (Distributed)" checked onchange="updateDecisionPreview()">
+            <div class="option-content">
+              <div class="option-name">Option A: Redis Redlock Algorithm</div>
+              <div class="option-desc">High-throughput lock acquisition with TTL auto-release; protects against multi-node deadlocks across distributed instances.</div>
+            </div>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="lock_backend" value="Postgres Advisory Locks" onchange="updateDecisionPreview()">
+            <div class="option-content">
+              <div class="option-name">Option B: PostgreSQL Advisory Locks</div>
+              <div class="option-desc">Zero extra infrastructure dependency, strict transactional lock guarantees, but limited by DB connection pool capacity.</div>
+            </div>
+          </label>
+        </div>
+        <button class="copy-button" onclick="copyDecision()">[COPY DECISION TO CLIPBOARD]</button>
+        <div class="copy-preview" id="decisionPreview">Selected: Option A: Redis Redlock Algorithm</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>7. Verification Matrix & Rollback Strategy</h2>
+      <ul>
+        <li><strong>Unit Tests</strong>: Validate domain logic with isolated mocks across all edge cases (network timeout, invalid payload, corrupt cache).</li>
+        <li><strong>Integration Tests</strong>: Verify end-to-end flow with real database and Redis containers.</li>
+        <li><strong>Load Benchmark</strong>: Simulate 5,000 req/sec to verify lock latency remains &lt; 5ms.</li>
+        <li><strong>Rollback Procedure</strong>: Revert migration via <code>db:migrate:down</code>; restore previous feature flag in config.</li>
+      </ul>
+    </section>
   </div>
+
+  <script>
+    function updateDecisionPreview() {
+      const selected = document.querySelector('input[name="lock_backend"]:checked');
+      const preview = document.getElementById('decisionPreview');
+      if (selected && preview) {
+        preview.innerText = 'Decision: ' + selected.value;
+      }
+    }
+    function copyDecision() {
+      const preview = document.getElementById('decisionPreview');
+      if (preview) {
+        navigator.clipboard.writeText(preview.innerText);
+        alert('Copied decision: ' + preview.innerText);
+      }
+    }
+  </script>
 </body>
 </html>

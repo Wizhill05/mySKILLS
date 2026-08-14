@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Implementation Plan: Distributed Cache & Real-Time Sync</title>
+  <title>Implementation Plan: Distributed Multi-Region Cache & Real-Time Sync Pipeline</title>
   <!-- Mermaid.js for Diagrams -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>
@@ -53,20 +53,20 @@
       background-color: #141416;
       color: #ececed;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      line-height: 1.6;
+      line-height: 1.65;
       padding: 40px 32px;
     }
 
     .content {
-      max-width: 1080px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
     /* Header */
     .header {
       border-bottom: 1px solid #27272a;
-      padding-bottom: 20px;
-      margin-bottom: 32px;
+      padding-bottom: 24px;
+      margin-bottom: 36px;
     }
     .header-badge {
       display: inline-block;
@@ -81,16 +81,16 @@
       margin-bottom: 12px;
     }
     h1 {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       letter-spacing: -0.4px;
     }
     .meta-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 24px;
       font-size: 13px;
       color: #a1a1aa;
     }
@@ -102,36 +102,38 @@
 
     /* Headings */
     h2 {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #ffffff;
-      margin: 36px 0 16px 0;
+      margin: 40px 0 16px 0;
       border-bottom: 1px solid #27272a;
       padding-bottom: 8px;
     }
     h3 {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 14.5px;
+      font-weight: 700;
       color: #e4e4e7;
-      margin: 20px 0 8px 0;
+      margin: 24px 0 10px 0;
     }
 
     p {
       color: #d4d4d8;
-      font-size: 14px;
-      margin-bottom: 14px;
+      font-size: 14.5px;
+      margin-bottom: 16px;
+      line-height: 1.7;
     }
 
     ul, ol {
-      margin-left: 20px;
-      margin-bottom: 16px;
+      margin-left: 22px;
+      margin-bottom: 18px;
       font-size: 14px;
     }
     li {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       color: #d4d4d8;
+      line-height: 1.65;
     }
 
     code {
@@ -145,9 +147,10 @@
     pre {
       background-color: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 16px;
+      padding: 18px;
       overflow-x: auto;
-      margin: 16px 0;
+      margin: 18px 0;
+      line-height: 1.5;
     }
     pre code {
       background: transparent;
@@ -159,16 +162,18 @@
 
     /* Callouts */
     .callout {
-      padding: 14px 18px;
-      margin: 18px 0;
-      font-size: 13.5px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 14px;
       border: 1px solid;
+      line-height: 1.65;
     }
     .callout-title {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
     }
     .callout-warning {
       background-color: #231c07;
@@ -193,13 +198,15 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 22px 0;
       font-size: 13.5px;
     }
     th, td {
       border: 1px solid #27272a;
-      padding: 11px 14px;
+      padding: 12px 16px;
       text-align: left;
+      vertical-align: top;
+      line-height: 1.6;
     }
     th {
       background-color: #1c1c20;
@@ -223,7 +230,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 2px 7px;
+      padding: 3px 8px;
       border: 1px solid;
     }
     .badge-pending { background: #1c1c20; border-color: #333338; color: #a1a1aa; }
@@ -235,32 +242,32 @@
     .diagram-container {
       background-color: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 28px 20px;
-      margin: 20px 0;
+      padding: 30px 24px;
+      margin: 24px 0;
       overflow-x: auto;
       display: flex;
       justify-content: center;
     }
     .mermaid {
       width: 100%;
-      min-height: 240px;
+      min-height: 260px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .mermaid svg {
       width: 100% !important;
-      max-width: 980px !important;
+      max-width: 1020px !important;
       height: auto !important;
-      min-height: 220px !important;
+      min-height: 240px !important;
     }
 
     /* Interactive Decision Cards */
     .decision-block {
       background: #18181c;
       border: 1px solid #27272a;
-      padding: 20px;
-      margin: 24px 0;
+      padding: 24px;
+      margin: 28px 0;
     }
     .decision-title {
       font-size: 14px;
@@ -268,19 +275,19 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #ffffff;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .options-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
     .option-label {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      padding: 14px 16px;
+      gap: 14px;
+      padding: 16px 18px;
       background: #141416;
       border: 1px solid #27272a;
       cursor: pointer;
@@ -290,27 +297,28 @@
       background: #1c1c20;
     }
     .option-label input {
-      margin-top: 3px;
+      margin-top: 4px;
     }
     .option-content {
       flex: 1;
     }
     .option-name {
       font-weight: 700;
-      font-size: 13.5px;
+      font-size: 14px;
       color: #ffffff;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .option-desc {
-      font-size: 12.5px;
+      font-size: 13px;
       color: #a1a1aa;
+      line-height: 1.55;
     }
 
     .copy-button {
       background-color: #27272a;
       color: #ffffff;
       border: 1px solid #3f3f46;
-      padding: 10px 18px;
+      padding: 10px 20px;
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
@@ -322,13 +330,14 @@
     }
     .copy-preview {
       font-family: ui-monospace, monospace;
-      font-size: 12px;
+      font-size: 12.5px;
       background: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 10px 14px;
+      padding: 12px 16px;
       color: #a1a1aa;
-      margin-top: 12px;
+      margin-top: 14px;
       white-space: pre-wrap;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -336,62 +345,141 @@
   <div class="content">
     <header class="header">
       <span class="header-badge">[PLAN] ARCHITECTURE & IMPLEMENTATION</span>
-      <h1>Distributed Cache & Real-Time Sync</h1>
+      <h1>Distributed Multi-Region Cache & Real-Time Sync Pipeline</h1>
       <div class="meta-row">
         <span class="meta-item">DATE: 2026-08-14</span>
         <span class="meta-item">STATUS: <span class="badge badge-progress">IN REVIEW</span></span>
         <span class="meta-item">TARGET: <code>backend/services/cache</code></span>
+        <span class="meta-item">AUTHOR: @Wizhill05</span>
       </div>
     </header>
 
     <section>
-      <h2>1. Objective</h2>
-      <p>Introduce Redis-backed multi-region caching layer for user session metadata and live document collaboration state to reduce PostgreSQL read load by 85%.</p>
+      <h2>1. Architecture Context & Problem Statement</h2>
+      <p>Under peak load (12,000 active concurrent WebSocket connections), the core application cluster generates excessive read pressure on the PostgreSQL primary instance (averaging 8,400 queries/sec). Over 78% of these queries are repetitive reads of user session metadata, active permissions, and live document state trees.</p>
+      <p>This implementation plan introduces a distributed Redis Cluster caching tier with probabilistic early expiration (XFetch algorithm) and an event-driven invalidation bus. This architecture reduces primary database read load by approximately 85% while guaranteeing sub-5ms median read latency and multi-node real-time synchronization.</p>
     </section>
 
     <section>
-      <h2>2. Architecture Topology</h2>
+      <h2>2. System Topology & Data Flow</h2>
       <div class="diagram-container">
         <div class="mermaid">
           flowchart LR
-            Client[Web Client] -->|HTTP / WS| Gateway[API Gateway]
-            Gateway --> Cache[(Redis Cluster)]
-            Gateway --> App[Node.js / Bun Core]
-            App --> Cache
-            App -->|Persistent Fallback| DB[(PostgreSQL Primary)]
-            Cache -.->|Replication| ReadReplica[(Read Cache)]
+            Client[Web & Mobile Clients] -->|HTTP REST / WebSocket| Gateway[API Gateway / Kong]
+            Gateway --> CoreApp[Node.js / Bun Core Workers]
+            
+            subgraph Data Tier
+              CoreApp -->|Read: Cache-Aside with XFetch| RedisPrimary[(Redis Cluster Primary)]
+              RedisPrimary -.->|Async Replication| RedisReplica[(Read Replica)]
+              CoreApp -->|Write / Transactional Fallback| Postgres[(PostgreSQL Primary)]
+            end
+
+            subgraph Realtime Sync Bus
+              CoreApp -->|Publish Invalidation Event| RedisPubSub{Redis Pub/Sub Channel}
+              RedisPubSub -->|Broadcast Evict Notice| SiblingWorkers[Sibling Worker Nodes]
+              SiblingWorkers -->|Invalidate Local L1 Memory| L1Cache[Worker Memory LRU]
+            end
         </div>
       </div>
     </section>
 
     <section>
-      <h2>3. Phase Breakdown & File Matrix</h2>
+      <h2>3. Technical Specifications & Interface Contracts</h2>
+      <p>The cache client provides a two-tier caching interface: an in-process L1 LRU cache (1,000 hot keys, 10-second TTL) combined with an L2 distributed Redis cluster tier. Keys are hashed using CRC16 with namespace isolation prefixing.</p>
+
+      <pre><code>// Cache Service Contract Definition
+export interface CacheEntry&lt;T&gt; {
+  data: T;
+  version: number;
+  storedAt: number;
+  ttlSeconds: number;
+  computationTimeMs: number;
+}
+
+export interface ICacheService {
+  getOrCompute&lt;T&gt;(
+    key: string,
+    computeFn: () => Promise&lt;T&gt;,
+    opts: { ttlSeconds: number; beta?: number; tags?: string[] }
+  ): Promise&lt;T&gt;;
+
+  invalidate(key: string): Promise&lt;void&gt;;
+  invalidateByTag(tag: string): Promise&lt;number&gt;;
+  publishSyncEvent(event: CacheSyncEvent): Promise&lt;void&gt;;
+}</code></pre>
+
+      <p>The probabilistic early expiration calculation follows the optimal XFetch formula:</p>
+      <pre><code>// XFetch early computation condition:
+// compute if: delta * beta * ln(random()) > (storedAt + ttl - now)
+function shouldEarlyRecompute(entry: CacheEntry&lt;unknown&gt;, beta: number = 1.0): boolean {
+  const now = Date.now();
+  const timeRemaining = (entry.storedAt + (entry.ttlSeconds * 1000)) - now;
+  const earlyComputeThreshold = -1 * (entry.computationTimeMs * beta * Math.log(Math.random()));
+  return timeRemaining <= earlyComputeThreshold;
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>4. Execution Phases & Detailed File Matrix</h2>
       <table>
         <thead>
           <tr>
-            <th style="width: 70px;">Phase</th>
-            <th>Description & Scope</th>
-            <th style="width: 260px;">Touched Files</th>
+            <th style="width: 80px;">Phase</th>
+            <th>Scope & Detailed Implementation Steps</th>
+            <th style="width: 300px;">Touched Files & Modules</th>
             <th style="width: 140px;">Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><strong>01</strong></td>
-            <td>Redis Connection Pool & Healthchecks</td>
-            <td><code>src/infra/redis.ts</code><br><code>src/config/env.ts</code></td>
+            <td>
+              <strong>Infrastructure Connection Pool & Sentinel Healthcheck</strong><br>
+              Implement connection pooling with TLS v1.3 verification, automatic reconnection exponential backoff, circuit-breaking, and cluster node discovery.
+            </td>
+            <td>
+              <code>src/infra/redis/client.ts</code><br>
+              <code>src/infra/redis/pool.ts</code><br>
+              <code>src/config/redis.config.ts</code>
+            </td>
             <td><span class="badge badge-done">COMPLETED</span></td>
           </tr>
           <tr>
             <td><strong>02</strong></td>
-            <td>Cache Key Invalidation Middleware</td>
-            <td><code>src/middleware/cache.ts</code><br><code>src/services/session.ts</code></td>
+            <td>
+              <strong>Two-Tier Cache Manager & Probabilistic Expiration</strong><br>
+              Build the two-tier caching engine (in-memory LRU + Redis L2). Integrate the XFetch probabilistic refresh algorithm to completely eliminate cache stampedes on hot keys.
+            </td>
+            <td>
+              <code>src/services/cache/cache-manager.ts</code><br>
+              <code>src/services/cache/xfetch.ts</code><br>
+              <code>src/middleware/session-cache.ts</code>
+            </td>
             <td><span class="badge badge-progress">IN PROGRESS</span></td>
           </tr>
           <tr>
             <td><strong>03</strong></td>
-            <td>WebSocket Pub/Sub Broadcast Bridge</td>
-            <td><code>src/ws/pubsub.ts</code><br><code>src/ws/server.ts</code></td>
+            <td>
+              <strong>Pub/Sub Inter-Node Invalidation Bus</strong><br>
+              Wire Redis Pub/Sub channels to broadcast tag-based and key-based invalidations across all worker instances. When a record is mutated, broadcast eviction to prune L1 memory caches.
+            </td>
+            <td>
+              <code>src/services/cache/sync-bus.ts</code><br>
+              <code>src/services/document/document.service.ts</code><br>
+              <code>src/ws/subscription-manager.ts</code>
+            </td>
+            <td><span class="badge badge-pending">PENDING</span></td>
+          </tr>
+          <tr>
+            <td><strong>04</strong></td>
+            <td>
+              <strong>Telemetry, Metrics & Prometheus Dashboards</strong><br>
+              Instrument hit/miss counters, calculation latency gauges, connection health telemetry, and Grafana alert thresholds (triggering on miss-ratio &gt; 35%).
+            </td>
+            <td>
+              <code>src/infra/telemetry/metrics.ts</code><br>
+              <code>deploy/dashboards/cache-overview.json</code>
+            </td>
             <td><span class="badge badge-pending">PENDING</span></td>
           </tr>
         </tbody>
@@ -399,34 +487,38 @@
     </section>
 
     <section>
-      <h2>4. Risks & Warnings</h2>
+      <h2>5. In-Depth Risk Assessment & Mitigation</h2>
       <div class="callout callout-warning">
-        <div class="callout-title">[WARNING] Cache Stampede Vulnerability</div>
-        High concurrency key expiration could cause database spikes. Implementing probabilistic early expiration (XFetch algorithm) in <code>src/infra/redis.ts</code>.
+        <div class="callout-title">[WARNING] Cache Stampede on Hot Document Re-calculation</div>
+        When a highly contested document key expires, hundreds of incoming requests simultaneously querying the database can exhaust the PostgreSQL connection pool. Mitigated by applying the XFetch probabilistic early calculation algorithm and acquiring a distributed atomic lock (via <code>SETNX</code> with a 3-second lease) during computation.
       </div>
       <div class="callout callout-error">
-        <div class="callout-title">[ERROR] Critical Blocker: Unencrypted Redis Connection</div>
-        Production environment requires TLS v1.3 with SNI verification. Plaintext TCP connections must be rejected at runtime boot.
+        <div class="callout-title">[ERROR] Critical Security Requirement: TLS Enforced & Authentication Guard</div>
+        Production clusters require TLS v1.3 with SNI verification and strong ACL credentials. The Redis client must immediately fail-fast and reject booting if unencrypted plaintext TCP connections or empty password configurations are detected in production environments.
+      </div>
+      <div class="callout callout-info">
+        <div class="callout-title">[INFO] Memory Bounding Policy</div>
+        Redis instance maximum memory configured to <code>4GB</code> with an <code>allkeys-lru</code> eviction policy. Large payloads (&gt; 512 KB) are automatically compressed using LZ4 before cache storage.
       </div>
     </section>
 
     <section>
-      <h2>5. Architecture Decisions Required</h2>
+      <h2>6. Architectural Decisions & Trade-Off Analysis</h2>
       <div class="decision-block">
-        <div class="decision-title">[DECISION] Select Invalidation Protocol:</div>
+        <div class="decision-title">[DECISION] Select Invalidation Protocol Strategy:</div>
         <div class="options-grid">
           <label class="option-label">
-            <input type="radio" name="inval_strategy" value="Event-Driven (Redis PubSub)" checked onchange="updateDecision()">
+            <input type="radio" name="inval_strategy" value="Event-Driven Redis PubSub" checked onchange="updateDecision()">
             <div class="option-content">
               <div class="option-name">Option A: Event-Driven Redis PubSub (Recommended)</div>
-              <div class="option-desc">Sub-millisecond invalidation across all nodes; decoupled event bus.</div>
+              <div class="option-desc">Sub-millisecond invalidation broadcasts across all cluster worker instances. Ensures instantaneous consistency across multi-node deployments with minimal overhead.</div>
             </div>
           </label>
           <label class="option-label">
             <input type="radio" name="inval_strategy" value="TTL Leases with Stale-While-Revalidate" onchange="updateDecision()">
             <div class="option-content">
               <div class="option-name">Option B: TTL Leases with Stale-While-Revalidate</div>
-              <div class="option-desc">Simpler architecture, zero inter-node sync, small window of eventual consistency.</div>
+              <div class="option-desc">Simpler architecture without inter-node pub/sub messaging. Tolerates a small window (1-3 seconds) of eventual consistency; lower network coupling between worker instances.</div>
             </div>
           </label>
         </div>
@@ -436,12 +528,16 @@
     </section>
 
     <section>
-      <h2>6. Verification Plan</h2>
+      <h2>7. Verification Matrix & Rollback Strategy</h2>
+      <h3>Comprehensive Test Suites</h3>
       <ul>
-        <li>Run unit tests: <code>bun test src/infra/redis.test.ts</code></li>
-        <li>Load test cache throughput: <code>k6 run tests/load/cache-bench.js</code></li>
-        <li>Verify failover behavior under Redis network partition simulation.</li>
+        <li><strong>Unit Tests (100% Branch Coverage)</strong>: Verify XFetch boundary math, key serialization, error handling when Redis nodes drop, and cache-aside fallbacks in <code>src/services/cache/cache-manager.test.ts</code>.</li>
+        <li><strong>Concurrency & Stampede Simulation</strong>: Execute <code>k6</code> load test with 2,000 simulated parallel requests against a cold key to ensure only 1 database query is triggered while others await the computed result.</li>
+        <li><strong>Chaos & Partition Testing</strong>: Simulate Redis cluster network partition via <code>iptables</code> drop to verify that the application degrades gracefully to direct database queries without request crashes.</li>
       </ul>
+
+      <h3>Rollback Protocol</h3>
+      <p>If Redis cluster latency exceeds 50ms or connection errors trigger the circuit breaker, the application runtime automatically flips the feature flag <code>ENABLE_REDIS_CACHE=false</code>. This bypasses the cache tier and directs all queries directly to PostgreSQL read replicas with zero downtime.</p>
     </section>
   </div>
 

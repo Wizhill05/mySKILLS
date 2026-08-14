@@ -1,18 +1,27 @@
 ---
 name: html
-description: Generate clean, minimalist, dark-gray HTML plans, architecture designs, reviews, and decision trees with large embedded diagrams, tables, callouts, and interactive option selectors. Plain dark-gray background, sharp edges (0px radius), strictly zero emojis. Saves to omp-html/ and outputs a clickable file:/// link.
+description: Generate comprehensive, highly detailed, dark-gray HTML plans, architecture designs, reviews, and decision trees with large embedded diagrams, detailed tables, code snippets, risk analysis, and interactive option selectors. Plain dark-gray background, sharp edges (0px radius), strictly zero emojis. Saves to omp-html/ and outputs a clickable file:/// link.
 ---
 
-# Minimalist HTML Plan & Review Generator Skill (`/html`)
+# Detailed HTML Plan & Review Generator Skill (`/html`)
 
-This skill generates structured, minimalist HTML documents for implementation plans, architecture designs, code reviews, and decision matrices.
+This skill generates comprehensive, highly detailed HTML documents for implementation plans, system architecture designs, in-depth code reviews, and architectural decision trees.
+
+## Content & Depth Guidelines
+
+- **Comprehensive & Thorough**: Provide full technical depth and detailed engineering analysis. Do not abbreviate or summarize away critical context.
+  - **Architecture & Design**: Detail system boundaries, component contracts, state lifecycles, and data flow semantics.
+  - **Concrete Code & Schemas**: Include concrete TypeScript interfaces, database schemas, API request/response payloads, and function signatures.
+  - **Exhaustive Phase Breakdown**: Provide thorough step-by-step implementation instructions with exact filenames, function names, state transitions, and edge cases.
+  - **In-Depth Risk & Failure Mode Analysis**: Thoroughly analyze race conditions, memory bounds, backwards compatibility, migration risks, and security implications.
+  - **Complete Verification Matrix**: Detail unit tests, integration scenarios, boundary conditions, performance benchmarks, and rollback plans.
 
 ## Core Rules & Styling Requirements
 
-- **Plain Dark Gray Background**: The entire page background is plain dark gray (`#141416`). No centered isolated box or floating card container. Content flows naturally in a clean readability column (`max-width: 1080px; margin: 0 auto;`).
+- **Plain Dark Gray Background**: The entire page background is plain dark gray (`#141416`). No centered isolated box or floating card container. Content flows naturally in a clean readability column (`max-width: 1100px; margin: 0 auto;`).
 - **No Rounded Corners**: Strict sharp minimalist aesthetic (`border-radius: 0 !important;` on all containers, buttons, callouts, tables, badges, code blocks, and form inputs).
 - **Strictly Zero Emojis**: Never use emojis anywhere in titles, badges, callouts, metadata, or text. Use clean uppercase text markers instead: `[PLAN]`, `[REVIEW]`, `[WARNING]`, `[ERROR]`, `[INFO]`, `[STATUS]`, `[TARGET]`, `[DECISION]`, `[COPY]`.
-- **Large & High-Visibility Graphs**: Mermaid.js diagrams must be rendered with high contrast, large readable node fonts (`14px`), spacious padding, and scaled to full container width (`width: 100%; min-height: 240px;`).
+- **Large & High-Visibility Graphs**: Mermaid.js diagrams must be rendered with high contrast, large readable node fonts (`14px`), spacious padding, and scaled to full container width (`width: 100%; min-height: 260px;`).
 - **Color Palette**:
   - **Page Background**: Dark gray (`#141416`).
   - **Borders & Dividers**: Subtle borders (`#27272a` / `#333338`).
@@ -20,8 +29,7 @@ This skill generates structured, minimalist HTML documents for implementation pl
   - **Warnings**: High-contrast Yellow (`#fef08a` text, `#231c07` background, `#854d0e` border, `#facc15` left accent line).
   - **Errors / Risks / Blockers**: High-contrast Red (`#fca5a5` text, `#2a0c0e` background, `#991b1b` border, `#ef4444` left accent line).
   - **Status Badges**: Sharp rectangular text pills (`STATUS: PENDING`, `STATUS: IN PROGRESS`, `STATUS: COMPLETED`, `STATUS: BLOCKED`).
-- **Concise & Terse**: Keep text short, precise, bullet-driven, and actionable. Avoid narrative fluff.
-- **Interactive Decisions**: When choices or questions are needed, embed interactive selection cards with a 1-click `[COPY DECISION TO CLIPBOARD]` prompt helper.
+- **Interactive Decisions**: When choices or questions are needed, embed interactive selection cards with full technical trade-off descriptions and a 1-click `[COPY DECISION TO CLIPBOARD]` prompt helper.
 
 ---
 
@@ -34,7 +42,7 @@ This skill generates structured, minimalist HTML documents for implementation pl
    __omp_shell(".gitignore")
    ```
 3. **File Naming**: Save the file as `<project_root>/omp-html/<slug>.html` (e.g., `plan-auth-system.html`, `review-pr-42.html`).
-4. **Chat Response**: After writing the file, provide a concise chat summary and output the clickable `file:///` link:
+4. **Chat Response**: After writing the file, provide a structured chat summary and output the clickable `file:///` link:
    ```text
    Plan generated: file:///C:/Users/Aryan/projects/Resumer-v2/omp-html/plan-auth-system.html
    ```
@@ -99,20 +107,20 @@ This skill generates structured, minimalist HTML documents for implementation pl
       background-color: #141416;
       color: #ececed;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      line-height: 1.6;
+      line-height: 1.65;
       padding: 40px 32px;
     }
 
     .content {
-      max-width: 1080px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
     /* Header */
     .header {
       border-bottom: 1px solid #27272a;
-      padding-bottom: 20px;
-      margin-bottom: 32px;
+      padding-bottom: 24px;
+      margin-bottom: 36px;
     }
     .header-badge {
       display: inline-block;
@@ -127,16 +135,16 @@ This skill generates structured, minimalist HTML documents for implementation pl
       margin-bottom: 12px;
     }
     h1 {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       letter-spacing: -0.4px;
     }
     .meta-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 24px;
       font-size: 13px;
       color: #a1a1aa;
     }
@@ -148,36 +156,46 @@ This skill generates structured, minimalist HTML documents for implementation pl
 
     /* Headings */
     h2 {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #ffffff;
-      margin: 36px 0 16px 0;
+      margin: 40px 0 16px 0;
       border-bottom: 1px solid #27272a;
       padding-bottom: 8px;
     }
     h3 {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 14.5px;
+      font-weight: 700;
       color: #e4e4e7;
-      margin: 20px 0 8px 0;
+      margin: 24px 0 10px 0;
+    }
+    h4 {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #a1a1aa;
+      margin: 16px 0 6px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     p {
       color: #d4d4d8;
-      font-size: 14px;
-      margin-bottom: 14px;
+      font-size: 14.5px;
+      margin-bottom: 16px;
+      line-height: 1.7;
     }
 
     ul, ol {
-      margin-left: 20px;
-      margin-bottom: 16px;
+      margin-left: 22px;
+      margin-bottom: 18px;
       font-size: 14px;
     }
     li {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       color: #d4d4d8;
+      line-height: 1.65;
     }
 
     code {
@@ -191,9 +209,10 @@ This skill generates structured, minimalist HTML documents for implementation pl
     pre {
       background-color: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 16px;
+      padding: 18px;
       overflow-x: auto;
-      margin: 16px 0;
+      margin: 18px 0;
+      line-height: 1.5;
     }
     pre code {
       background: transparent;
@@ -205,16 +224,18 @@ This skill generates structured, minimalist HTML documents for implementation pl
 
     /* Callouts */
     .callout {
-      padding: 14px 18px;
-      margin: 18px 0;
-      font-size: 13.5px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 14px;
       border: 1px solid;
+      line-height: 1.65;
     }
     .callout-title {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
     }
     .callout-warning {
       background-color: #231c07;
@@ -239,13 +260,15 @@ This skill generates structured, minimalist HTML documents for implementation pl
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 22px 0;
       font-size: 13.5px;
     }
     th, td {
       border: 1px solid #27272a;
-      padding: 11px 14px;
+      padding: 12px 16px;
       text-align: left;
+      vertical-align: top;
+      line-height: 1.6;
     }
     th {
       background-color: #1c1c20;
@@ -269,7 +292,7 @@ This skill generates structured, minimalist HTML documents for implementation pl
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 2px 7px;
+      padding: 3px 8px;
       border: 1px solid;
     }
     .badge-pending { background: #1c1c20; border-color: #333338; color: #a1a1aa; }
@@ -281,32 +304,32 @@ This skill generates structured, minimalist HTML documents for implementation pl
     .diagram-container {
       background-color: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 28px 20px;
-      margin: 20px 0;
+      padding: 30px 24px;
+      margin: 24px 0;
       overflow-x: auto;
       display: flex;
       justify-content: center;
     }
     .mermaid {
       width: 100%;
-      min-height: 240px;
+      min-height: 260px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .mermaid svg {
       width: 100% !important;
-      max-width: 980px !important;
+      max-width: 1020px !important;
       height: auto !important;
-      min-height: 220px !important;
+      min-height: 240px !important;
     }
 
     /* Interactive Decision Cards */
     .decision-block {
       background: #18181c;
       border: 1px solid #27272a;
-      padding: 20px;
-      margin: 24px 0;
+      padding: 24px;
+      margin: 28px 0;
     }
     .decision-title {
       font-size: 14px;
@@ -314,19 +337,19 @@ This skill generates structured, minimalist HTML documents for implementation pl
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #ffffff;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .options-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
     .option-label {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      padding: 14px 16px;
+      gap: 14px;
+      padding: 16px 18px;
       background: #141416;
       border: 1px solid #27272a;
       cursor: pointer;
@@ -336,27 +359,28 @@ This skill generates structured, minimalist HTML documents for implementation pl
       background: #1c1c20;
     }
     .option-label input {
-      margin-top: 3px;
+      margin-top: 4px;
     }
     .option-content {
       flex: 1;
     }
     .option-name {
       font-weight: 700;
-      font-size: 13.5px;
+      font-size: 14px;
       color: #ffffff;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .option-desc {
-      font-size: 12.5px;
+      font-size: 13px;
       color: #a1a1aa;
+      line-height: 1.55;
     }
 
     .copy-button {
       background-color: #27272a;
       color: #ffffff;
       border: 1px solid #3f3f46;
-      padding: 10px 18px;
+      padding: 10px 20px;
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
@@ -368,13 +392,14 @@ This skill generates structured, minimalist HTML documents for implementation pl
     }
     .copy-preview {
       font-family: ui-monospace, monospace;
-      font-size: 12px;
+      font-size: 12.5px;
       background: #0d0d0f;
       border: 1px solid #27272a;
-      padding: 10px 14px;
+      padding: 12px 16px;
       color: #a1a1aa;
-      margin-top: 12px;
+      margin-top: 14px;
       white-space: pre-wrap;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -391,40 +416,56 @@ This skill generates structured, minimalist HTML documents for implementation pl
     </header>
 
     <section>
-      <h2>1. Overview & Objectives</h2>
-      <p>{{Terse 2-3 sentence overview of what is being implemented and why.}}</p>
+      <h2>1. Architecture Context & Problem Statement</h2>
+      <p>{{Comprehensive technical background explaining the architecture, motivations, current bottlenecks, and target end-state.}}</p>
     </section>
 
     <section>
-      <h2>2. Architecture & Flow Diagram</h2>
+      <h2>2. System Topology & Data Flow</h2>
       <div class="diagram-container">
         <div class="mermaid">
           graph TD
-            A[Client / UI] -->|Action| B[Controller / API]
-            B --> C{Validation}
-            C -->|Valid| D[Service Layer]
-            C -->|Invalid| E[Error Response]
-            D --> F[(Database / State)]
+            A[Client Layer] -->|Request Payload| B[Gateway / Ingress Router]
+            B --> C{Authentication & Rate Limit}
+            C -->|Authorized| D[Domain Controller]
+            C -->|Rejected| E[401/429 Response]
+            D --> F[Service Engine]
+            F --> G[(Primary State Store)]
+            F --> H[(Cache / PubSub)]
         </div>
       </div>
     </section>
 
     <section>
-      <h2>3. Execution Steps</h2>
+      <h2>3. Technical Specifications & Interface Contracts</h2>
+      <p>{{Detailed interface definitions, data models, schemas, and contract guarantees.}}</p>
+      <pre><code>interface ServiceContract {
+  id: string;
+  payload: Record&lt;string, unknown&gt;;
+  timestamp: number;
+  status: "idle" | "running" | "completed" | "failed";
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>4. Execution Phases & File Modifications</h2>
       <table>
         <thead>
           <tr>
             <th style="width: 80px;">Phase</th>
-            <th>Task & Scope</th>
-            <th style="width: 240px;">Files Touched</th>
-            <th style="width: 120px;">Status</th>
+            <th>Scope & Detailed Implementation Steps</th>
+            <th style="width: 280px;">Files Touched & Symbols</th>
+            <th style="width: 130px;">Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><strong>01</strong></td>
-            <td>Setup Schema & Types</td>
-            <td><code>src/types/auth.ts</code></td>
+            <td>
+              <strong>Schema Foundation & Types</strong><br>
+              Define core data contracts, request validation schemas, and database entity models.
+            </td>
+            <td><code>src/types/domain.ts</code><br><code>src/schemas/validation.ts</code></td>
             <td><span class="badge badge-pending">PENDING</span></td>
           </tr>
         </tbody>
@@ -432,46 +473,56 @@ This skill generates structured, minimalist HTML documents for implementation pl
     </section>
 
     <section>
-      <h2>4. Risks & Considerations</h2>
+      <h2>5. Risk Assessment & Failure Modes</h2>
       <div class="callout callout-warning">
-        <div class="callout-title">[WARNING] Breaking Change</div>
-        Modifying this schema requires updating downstream callers in <code>src/services/api.ts</code>.
+        <div class="callout-title">[WARNING] Backwards Compatibility Risk</div>
+        Existing clients sending legacy payloads must be handled via fallback parser in <code>src/middleware/transform.ts</code> to prevent 400 Bad Request disruptions.
       </div>
       <div class="callout callout-error">
-        <div class="callout-title">[ERROR] Critical Risk / Blocker</div>
-        Token migration requires backwards compatibility fallback for existing session cookies.
+        <div class="callout-title">[ERROR] Critical Concurrency Hazard</div>
+        Unsynchronized state updates across multiple worker instances could trigger race conditions during reconciliation. A distributed Redis lock (Redlock) must be acquired before state commit.
       </div>
     </section>
 
     <section>
-      <h2>5. Architecture Decisions Needed</h2>
+      <h2>6. Architecture Decisions & Trade-Offs</h2>
       <div class="decision-block">
-        <div class="decision-title">[DECISION] Select Authentication Mechanism:</div>
+        <div class="decision-title">[DECISION] Select Distributed Locking Backend:</div>
         <div class="options-grid">
           <label class="option-label">
-            <input type="radio" name="auth_choice" value="JWT (Stateless)" checked onchange="updateDecisionPreview()">
+            <input type="radio" name="lock_backend" value="Redis Redlock (Distributed)" checked onchange="updateDecisionPreview()">
             <div class="option-content">
-              <div class="option-name">Option A: Stateless JWT Bearer Tokens</div>
-              <div class="option-desc">Fast, decentralized verification, zero database roundtrip for read requests.</div>
+              <div class="option-name">Option A: Redis Redlock Algorithm</div>
+              <div class="option-desc">High-throughput lock acquisition with TTL auto-release; protects against multi-node deadlocks across distributed instances.</div>
             </div>
           </label>
           <label class="option-label">
-            <input type="radio" name="auth_choice" value="Session Cookies (Stateful)" onchange="updateDecisionPreview()">
+            <input type="radio" name="lock_backend" value="Postgres Advisory Locks" onchange="updateDecisionPreview()">
             <div class="option-content">
-              <div class="option-name">Option B: Server-Side Session Cookies</div>
-              <div class="option-desc">Instant revocation capability, strict HTTP-only cookie security against XSS.</div>
+              <div class="option-name">Option B: PostgreSQL Advisory Locks</div>
+              <div class="option-desc">Zero extra infrastructure dependency, strict transactional lock guarantees, but limited by DB connection pool capacity.</div>
             </div>
           </label>
         </div>
         <button class="copy-button" onclick="copyDecision()">[COPY DECISION TO CLIPBOARD]</button>
-        <div class="copy-preview" id="decisionPreview">Selected: Option A: Stateless JWT Bearer Tokens</div>
+        <div class="copy-preview" id="decisionPreview">Selected: Option A: Redis Redlock Algorithm</div>
       </div>
+    </section>
+
+    <section>
+      <h2>7. Verification Matrix & Rollback Strategy</h2>
+      <ul>
+        <li><strong>Unit Tests</strong>: Validate domain logic with isolated mocks across all edge cases (network timeout, invalid payload, corrupt cache).</li>
+        <li><strong>Integration Tests</strong>: Verify end-to-end flow with real database and Redis containers.</li>
+        <li><strong>Load Benchmark</strong>: Simulate 5,000 req/sec to verify lock latency remains &lt; 5ms.</li>
+        <li><strong>Rollback Procedure</strong>: Revert migration via <code>db:migrate:down</code>; restore previous feature flag in config.</li>
+      </ul>
     </section>
   </div>
 
   <script>
     function updateDecisionPreview() {
-      const selected = document.querySelector('input[name="auth_choice"]:checked');
+      const selected = document.querySelector('input[name="lock_backend"]:checked');
       const preview = document.getElementById('decisionPreview');
       if (selected && preview) {
         preview.innerText = 'Decision: ' + selected.value;
