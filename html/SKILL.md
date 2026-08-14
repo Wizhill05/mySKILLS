@@ -1,13 +1,27 @@
 ---
 name: html
-description: Generate enterprise-grade, highly detailed, monochrome dark-gray HTML plans, architecture designs, reviews, and decision trees. Pure dark neutral background (#0c0c0c), solid crisp white typography (Inter font), strictly monochrome base with ONLY red, yellow, and green accents for errors, warnings, and success. Large embedded diagrams, tables, callouts, and interactive option selectors. Saves to omp-html/ and outputs a clickable file:/// link.
+description: Generate enterprise-grade, highly detailed, monochrome dark-gray HTML plans, architecture designs, reviews, and decision trees. Features permanent self-saving decision persistence (File System Access API & DOM serialization) so the user saves choices directly into the HTML file, and the agent reads them automatically via the read tool. Pure dark neutral background (#0c0c0c), solid crisp white typography, strictly monochrome with ONLY red, yellow, and green accents. Saves to omp-html/ and outputs a clickable file:/// link.
 ---
 
 # Monochrome HTML Plan & Review Generator Skill (`/html`)
 
 This skill generates clean, rigorous, monochrome dark-mode HTML documents for system architecture specifications, implementation plans, code reviews, and decision matrices.
 
-## Color & Typography Rules (Strict)
+## Permanent In-File Decision Persistence (No Copy-Pasting)
+
+When architectural options or decisions are needed from the user:
+1. **Interactive Form with Self-Persistence**: The HTML file contains interactive radio/checkbox options with a `[SAVE DECISIONS TO HTML FILE]` button.
+2. **Permanent HTML Mutation**:
+   - Selecting options updates the DOM's `checked` attributes and serializes choices into `<meta name="omp-decisions" content="...">` and `<div id="omp-decision-state" data-decisions="...">`.
+   - Clicking `[SAVE DECISIONS TO HTML FILE]` uses the File System Access API (`showSaveFilePicker`) or direct download to write the updated HTML document directly back to `<project_root>/omp-html/<slug>.html`.
+3. **Agent Inspection Protocol**:
+   - When the user asks to proceed, review choices, or implement the plan, the agent **reads `<project_root>/omp-html/<slug>.html` directly using the `read` tool**.
+   - The agent inspects `<meta name="omp-decisions">` or the `<input ... checked>` elements to determine exactly what the user selected.
+   - The agent executes the plan according to those saved decisions—**zero copy-pasting required from the user**.
+
+---
+
+## Visual Design & Color Rules (Strict)
 
 - **Pure Dark Neutral Background**: The entire page background is neutral dark gray/black (`#0c0c0c`). Content flows naturally in a clean column (`max-width: 1100px; margin: 0 auto; padding: 44px 32px;`).
 - **Strictly Monochrome Base**:
@@ -18,19 +32,15 @@ This skill generates clean, rigorous, monochrome dark-mode HTML documents for sy
 - **Allowed Accent Colors (Strictly 3 Colors Only)**:
   1. **YELLOW** (Warnings & Performance Alerts): Text `#fef08a`, Background `#1f1a05`, Border `#5c450a`, Left accent line `#eab308`.
   2. **RED** (Errors, Blockers & Critical Risks): Text `#fca5a5`, Background `#22090b`, Border `#5c1118`, Left accent line `#ef4444`.
-  3. **GREEN** (Success, Completed Status & Passed Checks): Text `#86efac`, Background `#05200f`, Border `#144625`, Left accent line `#22c55e`.
+  3. **GREEN** (Success, Completed Status & Saved State): Text `#86efac`, Background `#05200f`, Border `#144625`, Left accent line `#22c55e`.
 - **Solid Crisp Typography**:
   - Google Font Inter + JetBrains Mono:
     `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">`
   - Font stack: `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;`
   - Monospace stack: `'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;`
-  - Document Title: Solid filled 34px bold text (`color: #ffffff; font-weight: 800; letter-spacing: -0.03em; -webkit-text-stroke: 0;`). Never use outline/hollow fonts.
-- **Zero Emojis**: Never use emojis anywhere. Use clean uppercase technical markers: `[PLAN]`, `[REVIEW]`, `[WARNING]`, `[ERROR]`, `[INFO]`, `[STATUS]`, `[TARGET]`, `[DECISION]`, `[COPY]`.
+  - Document Title: Solid filled 34px bold text (`color: #ffffff; font-weight: 800; letter-spacing: -0.03em; -webkit-text-stroke: 0;`).
+- **Zero Emojis**: Never use emojis anywhere. Use clean uppercase technical markers: `[PLAN]`, `[REVIEW]`, `[WARNING]`, `[ERROR]`, `[INFO]`, `[STATUS]`, `[TARGET]`, `[DECISION]`, `[SAVED]`.
 - **Sharp Corners**: `border-radius: 0 !important;` on all elements.
-- **Monochrome Enterprise Diagrams (Mermaid.js)**:
-  - Clean neutral dark nodes (`fill: #1a1a1a`, `stroke: #444444`, `color: #ffffff`).
-  - Subgraphs with neutral dark containers (`#141414`, border `#2e2e2e`).
-  - Large full-width container scaling (`max-width: 1060px; min-height: 280px;`).
 
 ---
 
@@ -58,6 +68,7 @@ This skill generates clean, rigorous, monochrome dark-mode HTML documents for sy
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="omp-decisions" id="omp-meta-decisions" content="{}">
   <title>{{TITLE}}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -233,7 +244,7 @@ This skill generates clean, rigorous, monochrome dark-mode HTML documents for sy
       font-size: 13px;
     }
 
-    /* Callouts - Only Yellow, Red, Green accents */
+    /* Callouts - Only Yellow, Red, Green */
     .callout {
       padding: 16px 20px;
       margin: 22px 0;
@@ -351,12 +362,20 @@ This skill generates clean, rigorous, monochrome dark-mode HTML documents for sy
       min-height: 260px !important;
     }
 
-    /* Interactive Decision Cards */
+    /* Self-Saving Decision Block */
     .decision-block {
       background: #141414;
       border: 1px solid #262626;
       padding: 24px;
       margin: 28px 0;
+    }
+    .decision-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     .decision-title {
       font-size: 13px;
@@ -364,14 +383,21 @@ This skill generates clean, rigorous, monochrome dark-mode HTML documents for sy
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: #ffffff;
-      margin-bottom: 16px;
       font-family: 'JetBrains Mono', monospace;
+    }
+    .decision-status-pill {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 3px 8px;
+      background: #171717;
+      border: 1px solid #333333;
+      color: #a3a3a3;
     }
     .options-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
     .option-label {
       display: flex;
@@ -381,9 +407,14 @@ This skill generates clean, rigorous, monochrome dark-mode HTML documents for sy
       background: #0c0c0c;
       border: 1px solid #262626;
       cursor: pointer;
+      transition: border-color 0.15s ease;
     }
     .option-label:hover {
       border-color: #404040;
+      background: #171717;
+    }
+    .option-label.selected {
+      border-color: #525252;
       background: #171717;
     }
     .option-label input {
@@ -405,11 +436,17 @@ This skill generates clean, rigorous, monochrome dark-mode HTML documents for sy
       line-height: 1.55;
     }
 
-    .copy-button {
+    .save-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .save-file-button {
       background-color: #262626;
       color: #ffffff;
       border: 1px solid #404040;
-      padding: 10px 20px;
+      padding: 11px 22px;
       font-size: 11.5px;
       font-weight: 700;
       text-transform: uppercase;
@@ -417,78 +454,22 @@ This skill generates clean, rigorous, monochrome dark-mode HTML documents for sy
       cursor: pointer;
       font-family: 'JetBrains Mono', monospace;
     }
-    .copy-button:hover {
+    .save-file-button:hover {
       background-color: #333333;
     }
-    .copy-preview {
+    .save-status-msg {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      background: #080808;
-      border: 1px solid #262626;
-      padding: 12px 16px;
-      color: #a3a3a3;
-      margin-top: 14px;
-      white-space: pre-wrap;
-      line-height: 1.5;
+      color: #8a8a8a;
+    }
+    .save-status-msg.saved {
+      color: #4ade80;
     }
   </style>
 </head>
 <body>
   <div class="content">
-    <header class="header">
-      <span class="header-badge">[PLAN] ARCHITECTURE SPECIFICATION</span>
-      <h1>{{Plan Title}}</h1>
-      <div class="meta-row">
-        <span class="meta-item">DATE: {{Date}}</span>
-        <span class="meta-item">STATUS: <span class="badge badge-progress">IN REVIEW</span></span>
-        <span class="meta-item">TARGET: <code>{{Project / Module}}</code></span>
-        <span class="meta-item">AUTHOR: {{Author}}</span>
-      </div>
-    </header>
-
-    <section>
-      <h2><span class="section-num">01.</span> Architecture Context & Problem Statement</h2>
-      <p>{{Comprehensive technical background explaining the architecture, motivations, current bottlenecks, and target end-state.}}</p>
-    </section>
-
-    <section>
-      <h2><span class="section-num">02.</span> System Topology & Component Interactions</h2>
-      <div class="diagram-container">
-        <div class="mermaid">
-          flowchart TB
-            subgraph INGRESS["Ingress & Edge Layer"]
-              Client["Client Applications (Web / Mobile)"]
-              Gateway["API Gateway / Envoy (TLS Termination • Auth)"]
-            end
-
-            subgraph COMPUTE["Stateless Compute Tier"]
-              CoreWorkers["App Core Workers (Bun / Fastify Cluster)"]
-              L1LRU["L1 In-Memory LRU Cache (1K Hot Keys • 10s TTL)"]
-            end
-
-            subgraph CACHE["Distributed Cache & Invalidation"]
-              RedisPrimary[("Redis Cluster Primary (L2 Distributed Cache)")]
-              PubSubBus{{"Redis Pub/Sub Bus (Inter-Worker Eviction)"}}
-            end
-
-            subgraph STORAGE["Persistent Storage Tier"]
-              PostgresPrimary[("PostgreSQL 16 Primary (Transactional Truth)")]
-              ReadReplica[("Read Replica (Analytics & Fallback Reads)")]
-            end
-
-            Client -->|HTTPS / WSS| Gateway
-            Gateway -->|HTTP/2 Internal Proxy| CoreWorkers
-            CoreWorkers <-->|Sub-millisecond Lookup| L1LRU
-            CoreWorkers -->|Cache-Aside (XFetch)| RedisPrimary
-            CoreWorkers -->|Transactional Commits| PostgresPrimary
-            CoreWorkers -.->|Publish Eviction Notice| PubSubBus
-            PubSubBus -.->|Broadcast Invalidate| L1LRU
-            PostgresPrimary -.->|Async WAL Streaming| ReadReplica
-        </div>
-      </div>
-    </section>
-
-    <!-- Rest of template sections -->
+    <!-- Header and sections -->
   </div>
 </body>
 </html>
