@@ -1,35 +1,33 @@
 ---
 name: html
-description: Generate comprehensive, highly detailed, dark-gray HTML plans, architecture designs, reviews, and decision trees with large embedded diagrams, detailed tables, code snippets, risk analysis, and interactive option selectors. Plain dark-gray background, sharp edges (0px radius), strictly zero emojis. Saves to omp-html/ and outputs a clickable file:/// link.
+description: Generate enterprise-grade, highly detailed, dark-mode HTML architectural plans, system designs, reviews, and decision matrices. Deep obsidian background (#08080a), large 38px Helvetica typography, professional enterprise architecture diagrams with subgraphs and classDefs, sharp corners (0px radius), strictly zero emojis. Saves to omp-html/ and outputs a clickable file:/// link.
 ---
 
-# Detailed HTML Plan & Review Generator Skill (`/html`)
+# Enterprise HTML Plan & Review Generator Skill (`/html`)
 
-This skill generates comprehensive, highly detailed HTML documents for implementation plans, system architecture designs, in-depth code reviews, and architectural decision trees.
+This skill generates high-end, rigorous HTML documents for architecture specifications, implementation RFCs, in-depth code reviews, and technical decision matrices.
 
-## Content & Depth Guidelines
+## Visual Design & Typography Standards
 
-- **Comprehensive & Thorough**: Provide full technical depth and detailed engineering analysis. Do not abbreviate or summarize away critical context.
-  - **Architecture & Design**: Detail system boundaries, component contracts, state lifecycles, and data flow semantics.
-  - **Concrete Code & Schemas**: Include concrete TypeScript interfaces, database schemas, API request/response payloads, and function signatures.
-  - **Exhaustive Phase Breakdown**: Provide thorough step-by-step implementation instructions with exact filenames, function names, state transitions, and edge cases.
-  - **In-Depth Risk & Failure Mode Analysis**: Thoroughly analyze race conditions, memory bounds, backwards compatibility, migration risks, and security implications.
-  - **Complete Verification Matrix**: Detail unit tests, integration scenarios, boundary conditions, performance benchmarks, and rollback plans.
-
-## Core Rules & Styling Requirements
-
-- **Plain Dark Gray Background**: The entire page background is plain dark gray (`#141416`). No centered isolated box or floating card container. Content flows naturally in a clean readability column (`max-width: 1100px; margin: 0 auto;`).
-- **No Rounded Corners**: Strict sharp minimalist aesthetic (`border-radius: 0 !important;` on all containers, buttons, callouts, tables, badges, code blocks, and form inputs).
-- **Strictly Zero Emojis**: Never use emojis anywhere in titles, badges, callouts, metadata, or text. Use clean uppercase text markers instead: `[PLAN]`, `[REVIEW]`, `[WARNING]`, `[ERROR]`, `[INFO]`, `[STATUS]`, `[TARGET]`, `[DECISION]`, `[COPY]`.
-- **Large & High-Visibility Graphs**: Mermaid.js diagrams must be rendered with high contrast, large readable node fonts (`14px`), spacious padding, and scaled to full container width (`width: 100%; min-height: 260px;`).
-- **Color Palette**:
-  - **Page Background**: Dark gray (`#141416`).
-  - **Borders & Dividers**: Subtle borders (`#27272a` / `#333338`).
-  - **Text**: Crisp white (`#ffffff` / `#ececed`), subtext in muted light gray (`#a1a1aa`).
-  - **Warnings**: High-contrast Yellow (`#fef08a` text, `#231c07` background, `#854d0e` border, `#facc15` left accent line).
-  - **Errors / Risks / Blockers**: High-contrast Red (`#fca5a5` text, `#2a0c0e` background, `#991b1b` border, `#ef4444` left accent line).
-  - **Status Badges**: Sharp rectangular text pills (`STATUS: PENDING`, `STATUS: IN PROGRESS`, `STATUS: COMPLETED`, `STATUS: BLOCKED`).
-- **Interactive Decisions**: When choices or questions are needed, embed interactive selection cards with full technical trade-off descriptions and a 1-click `[COPY DECISION TO CLIPBOARD]` prompt helper.
+- **Deep Obsidian Background**: The entire page background is deep dark obsidian (`#08080a`). Content flows in a centered readable column (`max-width: 1120px; margin: 0 auto; padding: 48px 32px;`).
+- **Typography & Helvetica**:
+  - Embedded Helvetica Neue via CDN:
+    `<link href="https://fonts.cdnfonts.com/css/helvetica-neue-55" rel="stylesheet">`
+  - Font stack: `'Helvetica Neue', Helvetica, Arial, -apple-system, sans-serif;`
+  - Monospace font stack: `'JetBrains Mono', 'SF Mono', Consolas, Menlo, Monaco, monospace;`
+- **Typographic Scale & Visual Hierarchy**:
+  - **Document Title**: Large 38px bold header (`font-size: 38px; font-weight: 700; color: #ffffff; letter-spacing: -0.035em; line-height: 1.15;`).
+  - **Metadata Row**: Monospace key-value items (`DATE: 2026-08-14 | STATUS: IN REVIEW | TARGET: backend/services | AUTHOR: @user`).
+  - **Section Headers**: 19px bold uppercase (`h2 { font-size: 19px; letter-spacing: -0.01em; border-bottom: 1px solid #1a1a22; padding-bottom: 10px; }`) with cyan section numbers (`01.`, `02.`, etc.).
+  - **Subsection Headers**: 14.5px bold crisp white.
+- **Enterprise-Grade Diagrams (Mermaid.js)**:
+  - Diagrams must NEVER look amateur or childish. Always use:
+    - Structured subgraphs representing clear architectural boundaries (`INGRESS`, `COMPUTE`, `CACHING & PUBSUB`, `DATA TIER`).
+    - Semantic shapes: databases `[(Postgres)]`, queues/buses `{{Pub/Sub Bus}}`, gateways `[Gateway]`.
+    - Custom Mermaid `classDef` rules with sleek dark backgrounds and subtle accent borders (blue, cyan, purple, slate).
+    - Large full-width container scaling (`max-width: 1060px; min-height: 280px;`).
+- **Strictly Zero Emojis**: Never use emojis anywhere. Use clean uppercase technical markers: `[PLAN]`, `[REVIEW]`, `[WARNING]`, `[ERROR]`, `[INFO]`, `[STATUS]`, `[TARGET]`, `[DECISION]`, `[COPY]`.
+- **Sharp Corners**: `border-radius: 0 !important;` on all elements.
 
 ---
 
@@ -58,7 +56,9 @@ This skill generates comprehensive, highly detailed HTML documents for implement
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{TITLE}}</title>
-  <!-- Mermaid.js for Diagrams -->
+  <link rel="preconnect" href="https://fonts.cdnfonts.com">
+  <link href="https://fonts.cdnfonts.com/css/helvetica-neue-55" rel="stylesheet">
+  <!-- Mermaid.js for Enterprise Architecture Diagrams -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>
     mermaid.initialize({
@@ -66,32 +66,32 @@ This skill generates comprehensive, highly detailed HTML documents for implement
       theme: 'base',
       themeVariables: {
         darkMode: true,
-        background: '#0d0d0f',
-        primaryColor: '#1e293b',
-        primaryBorderColor: '#38bdf8',
-        primaryTextColor: '#ffffff',
-        lineColor: '#94a3b8',
-        secondaryColor: '#1e1e24',
-        tertiaryColor: '#0f172a',
-        mainBkg: '#1e293b',
-        nodeBorder: '#38bdf8',
-        clusterBkg: '#141418',
-        clusterBorder: '#3f3f46',
-        defaultLinkColor: '#94a3b8',
-        titleColor: '#ffffff',
-        edgeLabelBackground: '#0d0d0f',
-        actorBkg: '#1e293b',
-        actorBorder: '#38bdf8',
-        actorTextColor: '#ffffff',
-        actorLineColor: '#64748b',
-        signalColor: '#94a3b8',
-        signalTextColor: '#ffffff',
-        labelBoxBkgColor: '#1e293b',
-        labelBoxBorderColor: '#38bdf8',
-        labelTextColor: '#ffffff',
-        loopTextColor: '#ffffff',
-        fontSize: '14px',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        background: '#0c0d12',
+        primaryColor: '#12141c',
+        primaryBorderColor: '#2b3040',
+        primaryTextColor: '#f1f5f9',
+        lineColor: '#475569',
+        secondaryColor: '#161922',
+        tertiaryColor: '#0a0b10',
+        mainBkg: '#12141c',
+        nodeBorder: '#2b3040',
+        clusterBkg: '#0e1017',
+        clusterBorder: '#1e2230',
+        defaultLinkColor: '#64748b',
+        titleColor: '#f1f5f9',
+        edgeLabelBackground: '#0c0d12',
+        actorBkg: '#12141c',
+        actorBorder: '#2b3040',
+        actorTextColor: '#f1f5f9',
+        actorLineColor: '#475569',
+        signalColor: '#64748b',
+        signalTextColor: '#f1f5f9',
+        labelBoxBkgColor: '#12141c',
+        labelBoxBorderColor: '#2b3040',
+        labelTextColor: '#f1f5f9',
+        loopTextColor: '#f1f5f9',
+        fontSize: '13px',
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif"
       }
     });
   </script>
@@ -104,23 +104,24 @@ This skill generates comprehensive, highly detailed HTML documents for implement
     }
 
     body {
-      background-color: #141416;
+      background-color: #08080a;
       color: #ececed;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Helvetica Neue', Helvetica, Arial, -apple-system, sans-serif;
       line-height: 1.65;
-      padding: 40px 32px;
+      padding: 48px 32px;
+      -webkit-font-smoothing: antialiased;
     }
 
     .content {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
     }
 
     /* Header */
     .header {
-      border-bottom: 1px solid #27272a;
-      padding-bottom: 24px;
-      margin-bottom: 36px;
+      border-bottom: 1px solid #1a1a22;
+      padding-bottom: 28px;
+      margin-bottom: 40px;
     }
     .header-badge {
       display: inline-block;
@@ -129,24 +130,29 @@ This skill generates comprehensive, highly detailed HTML documents for implement
       text-transform: uppercase;
       letter-spacing: 1px;
       padding: 4px 8px;
-      background: #1c1c20;
-      border: 1px solid #333338;
+      background: #10131c;
+      border: 1px solid #1e293b;
       color: #38bdf8;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
     }
     h1 {
-      font-size: 28px;
+      font-size: 38px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 12px;
-      letter-spacing: -0.4px;
+      margin-bottom: 14px;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
     }
     .meta-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 24px;
-      font-size: 13px;
-      color: #a1a1aa;
+      align-items: center;
+      gap: 20px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+      color: #888892;
+      padding-top: 10px;
     }
     .meta-item {
       display: flex;
@@ -156,76 +162,77 @@ This skill generates comprehensive, highly detailed HTML documents for implement
 
     /* Headings */
     h2 {
-      font-size: 17px;
+      font-size: 19px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: -0.01em;
       color: #ffffff;
-      margin: 40px 0 16px 0;
-      border-bottom: 1px solid #27272a;
-      padding-bottom: 8px;
+      margin: 48px 0 20px 0;
+      border-bottom: 1px solid #1a1a22;
+      padding-bottom: 10px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      font-weight: 600;
     }
     h3 {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 700;
-      color: #e4e4e7;
-      margin: 24px 0 10px 0;
-    }
-    h4 {
-      font-size: 13.5px;
-      font-weight: 600;
-      color: #a1a1aa;
-      margin: 16px 0 6px 0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: #e2e8f0;
+      margin: 28px 0 12px 0;
+      letter-spacing: -0.01em;
     }
 
     p {
-      color: #d4d4d8;
+      color: #cbd5e1;
       font-size: 14.5px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       line-height: 1.7;
     }
 
     ul, ol {
       margin-left: 22px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       font-size: 14px;
     }
     li {
       margin-bottom: 8px;
-      color: #d4d4d8;
+      color: #cbd5e1;
       line-height: 1.65;
     }
 
     code {
-      font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
-      font-size: 13px;
-      background-color: #1f1f23;
-      border: 1px solid #333338;
+      font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+      font-size: 12.5px;
+      background-color: #12141c;
+      border: 1px solid #1e2230;
       padding: 2px 6px;
       color: #f43f5e;
     }
     pre {
-      background-color: #0d0d0f;
-      border: 1px solid #27272a;
-      padding: 18px;
+      background-color: #0c0d12;
+      border: 1px solid #1a1a22;
+      padding: 20px;
       overflow-x: auto;
-      margin: 18px 0;
+      margin: 20px 0;
       line-height: 1.5;
     }
     pre code {
       background: transparent;
       border: none;
       padding: 0;
-      color: #e4e4e7;
+      color: #e2e8f0;
       font-size: 13px;
     }
 
     /* Callouts */
     .callout {
-      padding: 16px 20px;
-      margin: 20px 0;
+      padding: 18px 22px;
+      margin: 24px 0;
       font-size: 14px;
       border: 1px solid;
       line-height: 1.65;
@@ -233,26 +240,27 @@ This skill generates comprehensive, highly detailed HTML documents for implement
     .callout-title {
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       margin-bottom: 8px;
-      font-size: 13px;
+      font-size: 12.5px;
+      font-family: 'JetBrains Mono', monospace;
     }
     .callout-warning {
-      background-color: #231c07;
-      border-color: #854d0e;
-      border-left: 4px solid #facc15;
+      background-color: #1a1506;
+      border-color: #4d3805;
+      border-left: 4px solid #eab308;
       color: #fef08a;
     }
     .callout-error {
-      background-color: #2a0c0e;
-      border-color: #991b1b;
+      background-color: #1f0a0d;
+      border-color: #5c1118;
       border-left: 4px solid #ef4444;
       color: #fca5a5;
     }
     .callout-info {
-      background-color: #082136;
-      border-color: #075985;
-      border-left: 4px solid #38bdf8;
+      background-color: #071524;
+      border-color: #0c3559;
+      border-left: 4px solid #0284c7;
       color: #bae6fd;
     }
 
@@ -260,103 +268,112 @@ This skill generates comprehensive, highly detailed HTML documents for implement
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 22px 0;
+      margin: 24px 0;
       font-size: 13.5px;
-    }
-    th, td {
-      border: 1px solid #27272a;
-      padding: 12px 16px;
-      text-align: left;
-      vertical-align: top;
-      line-height: 1.6;
+      border: 1px solid #1a1a22;
     }
     th {
-      background-color: #1c1c20;
-      color: #ffffff;
+      background-color: #0e1017;
+      color: #cbd5e1;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11.5px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #1e2230;
+      border-right: 1px solid #1a1a22;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #14161f;
+      border-right: 1px solid #14161f;
+      vertical-align: top;
+      line-height: 1.6;
+      color: #cbd5e1;
     }
     tr:nth-child(even) {
-      background-color: #18181c;
+      background-color: #0b0c10;
     }
     tr:hover {
-      background-color: #1f1f25;
+      background-color: #12141c;
     }
 
     /* Status Badges */
     .badge {
       display: inline-block;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       padding: 3px 8px;
       border: 1px solid;
+      font-family: 'JetBrains Mono', monospace;
     }
-    .badge-pending { background: #1c1c20; border-color: #333338; color: #a1a1aa; }
+    .badge-pending { background: #12141c; border-color: #272c3d; color: #94a3b8; }
     .badge-progress { background: #082136; border-color: #075985; color: #38bdf8; }
     .badge-done { background: #062814; border-color: #166534; color: #4ade80; }
     .badge-risk { background: #2a0c0e; border-color: #991b1b; color: #f87171; }
 
     /* Mermaid diagrams container */
     .diagram-container {
-      background-color: #0d0d0f;
-      border: 1px solid #27272a;
-      padding: 30px 24px;
-      margin: 24px 0;
+      background-color: #0c0d12;
+      border: 1px solid #1a1a22;
+      padding: 36px 28px;
+      margin: 28px 0;
       overflow-x: auto;
       display: flex;
       justify-content: center;
     }
     .mermaid {
       width: 100%;
-      min-height: 260px;
+      min-height: 280px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .mermaid svg {
       width: 100% !important;
-      max-width: 1020px !important;
+      max-width: 1060px !important;
       height: auto !important;
-      min-height: 240px !important;
+      min-height: 260px !important;
     }
 
     /* Interactive Decision Cards */
     .decision-block {
-      background: #18181c;
-      border: 1px solid #27272a;
-      padding: 24px;
-      margin: 28px 0;
+      background: #0d0f16;
+      border: 1px solid #1a1e2a;
+      padding: 26px;
+      margin: 32px 0;
     }
     .decision-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       color: #ffffff;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
+      font-family: 'JetBrains Mono', monospace;
     }
     .options-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
     .option-label {
       display: flex;
       align-items: flex-start;
       gap: 14px;
       padding: 16px 18px;
-      background: #141416;
-      border: 1px solid #27272a;
+      background: #08080a;
+      border: 1px solid #1a1e2a;
       cursor: pointer;
     }
     .option-label:hover {
-      border-color: #3f3f46;
-      background: #1c1c20;
+      border-color: #2b3040;
+      background: #10131c;
     }
     .option-label input {
       margin-top: 4px;
@@ -372,32 +389,33 @@ This skill generates comprehensive, highly detailed HTML documents for implement
     }
     .option-desc {
       font-size: 13px;
-      color: #a1a1aa;
+      color: #94a3b8;
       line-height: 1.55;
     }
 
     .copy-button {
-      background-color: #27272a;
+      background-color: #1e2230;
       color: #ffffff;
-      border: 1px solid #3f3f46;
-      padding: 10px 20px;
-      font-size: 12px;
+      border: 1px solid #2e354a;
+      padding: 11px 22px;
+      font-size: 11.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
     }
     .copy-button:hover {
-      background-color: #3f3f46;
+      background-color: #2b3040;
     }
     .copy-preview {
-      font-family: ui-monospace, monospace;
-      font-size: 12.5px;
-      background: #0d0d0f;
-      border: 1px solid #27272a;
-      padding: 12px 16px;
-      color: #a1a1aa;
-      margin-top: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: #050507;
+      border: 1px solid #1a1a22;
+      padding: 14px 18px;
+      color: #94a3b8;
+      margin-top: 16px;
       white-space: pre-wrap;
       line-height: 1.5;
     }
@@ -406,136 +424,70 @@ This skill generates comprehensive, highly detailed HTML documents for implement
 <body>
   <div class="content">
     <header class="header">
-      <span class="header-badge">[PLAN] IMPLEMENTATION</span>
+      <span class="header-badge">[PLAN] ARCHITECTURE RFC</span>
       <h1>{{Plan Title}}</h1>
       <div class="meta-row">
         <span class="meta-item">DATE: {{Date}}</span>
         <span class="meta-item">STATUS: <span class="badge badge-progress">IN REVIEW</span></span>
         <span class="meta-item">TARGET: <code>{{Project / Module}}</code></span>
+        <span class="meta-item">AUTHOR: {{Author}}</span>
       </div>
     </header>
 
     <section>
-      <h2>1. Architecture Context & Problem Statement</h2>
+      <h2><span class="section-num">01.</span> Architecture Context & Problem Statement</h2>
       <p>{{Comprehensive technical background explaining the architecture, motivations, current bottlenecks, and target end-state.}}</p>
     </section>
 
     <section>
-      <h2>2. System Topology & Data Flow</h2>
+      <h2><span class="section-num">02.</span> System Topology & Component Interactions</h2>
       <div class="diagram-container">
         <div class="mermaid">
-          graph TD
-            A[Client Layer] -->|Request Payload| B[Gateway / Ingress Router]
-            B --> C{Authentication & Rate Limit}
-            C -->|Authorized| D[Domain Controller]
-            C -->|Rejected| E[401/429 Response]
-            D --> F[Service Engine]
-            F --> G[(Primary State Store)]
-            F --> H[(Cache / PubSub)]
+          flowchart TB
+            subgraph INGRESS["Client & Ingress Layer"]
+              Client["Client Apps<br/><small style='color:#94a3b8'>Web / Mobile Clients</small>"]
+              Gateway["API Gateway / Kong<br/><small style='color:#94a3b8'>TLS Termination • Rate Limiting</small>"]
+            end
+
+            subgraph COMPUTE["Stateless Compute Tier"]
+              CoreWorkers["App Core Workers<br/><small style='color:#94a3b8'>Session Validation • Business Logic</small>"]
+              L1LRU["L1 In-Memory LRU<br/><small style='color:#94a3b8'>1,000 Hot Keys • 10s TTL</small>"]
+            end
+
+            subgraph CACHE["Distributed Cache & Sync Bus"]
+              RedisL2[("Redis Cluster Primary<br/><small style='color:#94a3b8'>L2 Distributed Cache</small>")]
+              PubSubBus{{"Redis Pub/Sub Channel<br/><small style='color:#94a3b8'>Inter-Worker Eviction Notice</small>"}}
+            end
+
+            subgraph DATA["Persistent Storage Tier"]
+              PostgresDB[("PostgreSQL 16 Primary<br/><small style='color:#94a3b8'>Transactional Data</small>")]
+              ReplicaDB[("Read Replica<br/><small style='color:#94a3b8'>Analytics / Fallback</small>")]
+            end
+
+            Client -->|HTTPS / WSS| Gateway
+            Gateway -->|HTTP/2 Proxy| CoreWorkers
+            CoreWorkers <-->|Sub-ms Lookup| L1LRU
+            CoreWorkers -->|Cache-Aside XFetch| RedisL2
+            CoreWorkers -->|Transactional Mutations| PostgresDB
+            CoreWorkers -.->|Eviction Notice| PubSubBus
+            PubSubBus -.->|Broadcast Invalidation| L1LRU
+            PostgresDB -.->|WAL Replication| ReplicaDB
+
+            classDef ingress fill:#10131c,stroke:#2563eb,stroke-width:1.5px,color:#f8fafc;
+            classDef compute fill:#131722,stroke:#0284c7,stroke-width:1.5px,color:#f8fafc;
+            classDef cache fill:#151221,stroke:#9333ea,stroke-width:1.5px,color:#f8fafc;
+            classDef storage fill:#0f172a,stroke:#475569,stroke-width:1.5px,color:#f8fafc;
+
+            class Client,Gateway ingress;
+            class CoreWorkers,L1LRU compute;
+            class RedisL2,PubSubBus cache;
+            class PostgresDB,ReplicaDB storage;
         </div>
       </div>
     </section>
 
-    <section>
-      <h2>3. Technical Specifications & Interface Contracts</h2>
-      <p>{{Detailed interface definitions, data models, schemas, and contract guarantees.}}</p>
-      <pre><code>interface ServiceContract {
-  id: string;
-  payload: Record&lt;string, unknown&gt;;
-  timestamp: number;
-  status: "idle" | "running" | "completed" | "failed";
-}</code></pre>
-    </section>
-
-    <section>
-      <h2>4. Execution Phases & File Modifications</h2>
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 80px;">Phase</th>
-            <th>Scope & Detailed Implementation Steps</th>
-            <th style="width: 280px;">Files Touched & Symbols</th>
-            <th style="width: 130px;">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>01</strong></td>
-            <td>
-              <strong>Schema Foundation & Types</strong><br>
-              Define core data contracts, request validation schemas, and database entity models.
-            </td>
-            <td><code>src/types/domain.ts</code><br><code>src/schemas/validation.ts</code></td>
-            <td><span class="badge badge-pending">PENDING</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section>
-      <h2>5. Risk Assessment & Failure Modes</h2>
-      <div class="callout callout-warning">
-        <div class="callout-title">[WARNING] Backwards Compatibility Risk</div>
-        Existing clients sending legacy payloads must be handled via fallback parser in <code>src/middleware/transform.ts</code> to prevent 400 Bad Request disruptions.
-      </div>
-      <div class="callout callout-error">
-        <div class="callout-title">[ERROR] Critical Concurrency Hazard</div>
-        Unsynchronized state updates across multiple worker instances could trigger race conditions during reconciliation. A distributed Redis lock (Redlock) must be acquired before state commit.
-      </div>
-    </section>
-
-    <section>
-      <h2>6. Architecture Decisions & Trade-Offs</h2>
-      <div class="decision-block">
-        <div class="decision-title">[DECISION] Select Distributed Locking Backend:</div>
-        <div class="options-grid">
-          <label class="option-label">
-            <input type="radio" name="lock_backend" value="Redis Redlock (Distributed)" checked onchange="updateDecisionPreview()">
-            <div class="option-content">
-              <div class="option-name">Option A: Redis Redlock Algorithm</div>
-              <div class="option-desc">High-throughput lock acquisition with TTL auto-release; protects against multi-node deadlocks across distributed instances.</div>
-            </div>
-          </label>
-          <label class="option-label">
-            <input type="radio" name="lock_backend" value="Postgres Advisory Locks" onchange="updateDecisionPreview()">
-            <div class="option-content">
-              <div class="option-name">Option B: PostgreSQL Advisory Locks</div>
-              <div class="option-desc">Zero extra infrastructure dependency, strict transactional lock guarantees, but limited by DB connection pool capacity.</div>
-            </div>
-          </label>
-        </div>
-        <button class="copy-button" onclick="copyDecision()">[COPY DECISION TO CLIPBOARD]</button>
-        <div class="copy-preview" id="decisionPreview">Selected: Option A: Redis Redlock Algorithm</div>
-      </div>
-    </section>
-
-    <section>
-      <h2>7. Verification Matrix & Rollback Strategy</h2>
-      <ul>
-        <li><strong>Unit Tests</strong>: Validate domain logic with isolated mocks across all edge cases (network timeout, invalid payload, corrupt cache).</li>
-        <li><strong>Integration Tests</strong>: Verify end-to-end flow with real database and Redis containers.</li>
-        <li><strong>Load Benchmark</strong>: Simulate 5,000 req/sec to verify lock latency remains &lt; 5ms.</li>
-        <li><strong>Rollback Procedure</strong>: Revert migration via <code>db:migrate:down</code>; restore previous feature flag in config.</li>
-      </ul>
-    </section>
+    <!-- Rest of template sections -->
   </div>
-
-  <script>
-    function updateDecisionPreview() {
-      const selected = document.querySelector('input[name="lock_backend"]:checked');
-      const preview = document.getElementById('decisionPreview');
-      if (selected && preview) {
-        preview.innerText = 'Decision: ' + selected.value;
-      }
-    }
-    function copyDecision() {
-      const preview = document.getElementById('decisionPreview');
-      if (preview) {
-        navigator.clipboard.writeText(preview.innerText);
-        alert('Copied decision: ' + preview.innerText);
-      }
-    }
-  </script>
 </body>
 </html>
 ```

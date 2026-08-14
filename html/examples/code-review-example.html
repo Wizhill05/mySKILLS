@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Code Review: PR #142 - Resume Generation Pipeline & AI Schema Validator</title>
-  <!-- Mermaid.js for Diagrams -->
+  <title>Security & Architecture Code Audit: PR #142 - Resume Generation Pipeline</title>
+  <link rel="preconnect" href="https://fonts.cdnfonts.com">
+  <link href="https://fonts.cdnfonts.com/css/helvetica-neue-55" rel="stylesheet">
+  <!-- Mermaid.js for Enterprise Architecture Diagrams -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>
     mermaid.initialize({
@@ -12,32 +14,32 @@
       theme: 'base',
       themeVariables: {
         darkMode: true,
-        background: '#0d0d0f',
-        primaryColor: '#1e293b',
-        primaryBorderColor: '#38bdf8',
-        primaryTextColor: '#ffffff',
-        lineColor: '#94a3b8',
-        secondaryColor: '#1e1e24',
-        tertiaryColor: '#0f172a',
-        mainBkg: '#1e293b',
-        nodeBorder: '#38bdf8',
-        clusterBkg: '#141418',
-        clusterBorder: '#3f3f46',
-        defaultLinkColor: '#94a3b8',
-        titleColor: '#ffffff',
-        edgeLabelBackground: '#0d0d0f',
-        actorBkg: '#1e293b',
-        actorBorder: '#38bdf8',
-        actorTextColor: '#ffffff',
-        actorLineColor: '#64748b',
-        signalColor: '#94a3b8',
-        signalTextColor: '#ffffff',
-        labelBoxBkgColor: '#1e293b',
-        labelBoxBorderColor: '#38bdf8',
-        labelTextColor: '#ffffff',
-        loopTextColor: '#ffffff',
-        fontSize: '14px',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        background: '#0c0d12',
+        primaryColor: '#12141c',
+        primaryBorderColor: '#2b3040',
+        primaryTextColor: '#f1f5f9',
+        lineColor: '#475569',
+        secondaryColor: '#161922',
+        tertiaryColor: '#0a0b10',
+        mainBkg: '#12141c',
+        nodeBorder: '#2b3040',
+        clusterBkg: '#0e1017',
+        clusterBorder: '#1e2230',
+        defaultLinkColor: '#64748b',
+        titleColor: '#f1f5f9',
+        edgeLabelBackground: '#0c0d12',
+        actorBkg: '#12141c',
+        actorBorder: '#2b3040',
+        actorTextColor: '#f1f5f9',
+        actorLineColor: '#475569',
+        signalColor: '#64748b',
+        signalTextColor: '#f1f5f9',
+        labelBoxBkgColor: '#12141c',
+        labelBoxBorderColor: '#2b3040',
+        labelTextColor: '#f1f5f9',
+        loopTextColor: '#f1f5f9',
+        fontSize: '13px',
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif"
       }
     });
   </script>
@@ -50,23 +52,24 @@
     }
 
     body {
-      background-color: #141416;
+      background-color: #08080a;
       color: #ececed;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Helvetica Neue', Helvetica, Arial, -apple-system, sans-serif;
       line-height: 1.65;
-      padding: 40px 32px;
+      padding: 48px 32px;
+      -webkit-font-smoothing: antialiased;
     }
 
     .content {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
     }
 
     /* Header */
     .header {
-      border-bottom: 1px solid #27272a;
-      padding-bottom: 24px;
-      margin-bottom: 36px;
+      border-bottom: 1px solid #1a1a22;
+      padding-bottom: 28px;
+      margin-bottom: 40px;
     }
     .header-badge {
       display: inline-block;
@@ -75,24 +78,29 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       padding: 4px 8px;
-      background: #1c1c20;
-      border: 1px solid #333338;
-      color: #f43f5e;
-      margin-bottom: 12px;
+      background: #1f0a0d;
+      border: 1px solid #5c1118;
+      color: #f87171;
+      margin-bottom: 14px;
+      font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
     }
     h1 {
-      font-size: 28px;
+      font-size: 38px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 12px;
-      letter-spacing: -0.4px;
+      margin-bottom: 14px;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
     }
     .meta-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 24px;
-      font-size: 13px;
-      color: #a1a1aa;
+      align-items: center;
+      gap: 20px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+      color: #888892;
+      padding-top: 10px;
     }
     .meta-item {
       display: flex;
@@ -102,67 +110,76 @@
 
     /* Headings */
     h2 {
-      font-size: 17px;
+      font-size: 19px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: -0.01em;
       color: #ffffff;
-      margin: 40px 0 16px 0;
-      border-bottom: 1px solid #27272a;
-      padding-bottom: 8px;
+      margin: 48px 0 20px 0;
+      border-bottom: 1px solid #1a1a22;
+      padding-bottom: 10px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #f43f5e;
+      font-weight: 600;
     }
     h3 {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 700;
-      color: #e4e4e7;
-      margin: 24px 0 10px 0;
+      color: #e2e8f0;
+      margin: 28px 0 12px 0;
+      letter-spacing: -0.01em;
     }
 
     p {
-      color: #d4d4d8;
+      color: #cbd5e1;
       font-size: 14.5px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       line-height: 1.7;
     }
 
     ul {
       margin-left: 22px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       font-size: 14px;
     }
     li {
       margin-bottom: 8px;
-      color: #d4d4d8;
+      color: #cbd5e1;
     }
 
     code {
-      font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
-      font-size: 13px;
-      background-color: #1f1f23;
-      border: 1px solid #333338;
+      font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+      font-size: 12.5px;
+      background-color: #12141c;
+      border: 1px solid #1e2230;
       padding: 2px 6px;
       color: #f43f5e;
     }
     pre {
-      background-color: #0d0d0f;
-      border: 1px solid #27272a;
-      padding: 18px;
+      background-color: #0c0d12;
+      border: 1px solid #1a1a22;
+      padding: 20px;
       overflow-x: auto;
-      margin: 18px 0;
+      margin: 20px 0;
       line-height: 1.5;
     }
     pre code {
       background: transparent;
       border: none;
       padding: 0;
-      color: #e4e4e7;
+      color: #e2e8f0;
       font-size: 13px;
     }
 
     /* Callouts */
     .callout {
-      padding: 16px 20px;
-      margin: 20px 0;
+      padding: 18px 22px;
+      margin: 24px 0;
       font-size: 14px;
       border: 1px solid;
       line-height: 1.65;
@@ -170,19 +187,20 @@
     .callout-title {
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       margin-bottom: 8px;
-      font-size: 13px;
+      font-size: 12.5px;
+      font-family: 'JetBrains Mono', monospace;
     }
     .callout-warning {
-      background-color: #231c07;
-      border-color: #854d0e;
-      border-left: 4px solid #facc15;
+      background-color: #1a1506;
+      border-color: #4d3805;
+      border-left: 4px solid #eab308;
       color: #fef08a;
     }
     .callout-error {
-      background-color: #2a0c0e;
-      border-color: #991b1b;
+      background-color: #1f0a0d;
+      border-color: #5c1118;
       border-left: 4px solid #ef4444;
       color: #fca5a5;
     }
@@ -191,72 +209,80 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 22px 0;
+      margin: 24px 0;
       font-size: 13.5px;
-    }
-    th, td {
-      border: 1px solid #27272a;
-      padding: 12px 16px;
-      text-align: left;
-      vertical-align: top;
-      line-height: 1.6;
+      border: 1px solid #1a1a22;
     }
     th {
-      background-color: #1c1c20;
-      color: #ffffff;
+      background-color: #0e1017;
+      color: #cbd5e1;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11.5px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #1e2230;
+      border-right: 1px solid #1a1a22;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #14161f;
+      border-right: 1px solid #14161f;
+      vertical-align: top;
+      line-height: 1.6;
+      color: #cbd5e1;
     }
     tr:nth-child(even) {
-      background-color: #18181c;
+      background-color: #0b0c10;
     }
     tr:hover {
-      background-color: #1f1f25;
+      background-color: #12141c;
     }
 
     .badge {
       display: inline-block;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       padding: 3px 8px;
       border: 1px solid;
+      font-family: 'JetBrains Mono', monospace;
     }
     .badge-risk { background: #2a0c0e; border-color: #991b1b; color: #f87171; }
-    .badge-warn { background: #231c07; border-color: #854d0e; color: #facc15; }
+    .badge-warn { background: #1a1506; border-color: #4d3805; color: #facc15; }
     .badge-pass { background: #062814; border-color: #166534; color: #4ade80; }
 
     .diagram-container {
-      background-color: #0d0d0f;
-      border: 1px solid #27272a;
-      padding: 30px 24px;
-      margin: 24px 0;
+      background-color: #0c0d12;
+      border: 1px solid #1a1a22;
+      padding: 36px 28px;
+      margin: 28px 0;
       overflow-x: auto;
       display: flex;
       justify-content: center;
     }
     .mermaid {
       width: 100%;
-      min-height: 260px;
+      min-height: 280px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .mermaid svg {
       width: 100% !important;
-      max-width: 1020px !important;
+      max-width: 1060px !important;
       height: auto !important;
-      min-height: 240px !important;
+      min-height: 260px !important;
     }
   </style>
 </head>
 <body>
   <div class="content">
     <header class="header">
-      <span class="header-badge">[REVIEW] SECURITY & ARCHITECTURE</span>
+      <span class="header-badge">[REVIEW] SECURITY & ARCHITECTURE AUDIT</span>
       <h1>PR #142: Resume Generation Pipeline & AI Schema Validator</h1>
       <div class="meta-row">
         <span class="meta-item">AUTHOR: @Wizhill05</span>
@@ -267,13 +293,13 @@
     </header>
 
     <section>
-      <h2>1. Executive Summary & Assessment</h2>
+      <h2><span class="section-num">01.</span> Executive Summary & Assessment</h2>
       <p>This pull request introduces structured JSON schema enforcement for LLM resume generation output via Server-Sent Events (SSE) streaming. Overall architectural direction is solid, leveraging Zod structured schemas for validation before database persistence.</p>
       <p>However, during in-depth code audit, <strong>two critical security and memory-safety vulnerabilities</strong> were identified in stream chunk buffering and HTML canvas rendering. These issues must be addressed before this PR is approved for production deployment.</p>
     </section>
 
     <section>
-      <h2>2. Generation Stream Sequence & Lifecycle</h2>
+      <h2><span class="section-num">02.</span> Generation Stream Lifecycle & Data Flow</h2>
       <div class="diagram-container">
         <div class="mermaid">
           sequenceDiagram
@@ -300,7 +326,7 @@
     </section>
 
     <section>
-      <h2>3. File Findings Matrix</h2>
+      <h2><span class="section-num">03.</span> File Findings Matrix</h2>
       <table>
         <thead>
           <tr>
@@ -335,7 +361,7 @@
     </section>
 
     <section>
-      <h2>4. In-Depth Technical Findings & Concrete Patches</h2>
+      <h2><span class="section-num">04.</span> In-Depth Technical Findings & Concrete Patches</h2>
 
       <div class="callout callout-error">
         <div class="callout-title">[ERROR] Critical Vulnerability: Unbounded SSE Stream Buffer (ai-generator.ts:88)</div>
@@ -367,7 +393,7 @@ export function escapeSvgText(input: string): string {
     </section>
 
     <section>
-      <h2>5. Actionable Remediation Checklist</h2>
+      <h2><span class="section-num">05.</span> Actionable Remediation Checklist</h2>
       <ul>
         <li>Implement <code>MAX_STREAM_BYTES</code> guard in <code>src/services/ai-generator.ts</code> with explicit connection abortion.</li>
         <li>Sanitize all string inputs inside <code>src/renderers/pdf-canvas.ts</code> prior to SVG construction.</li>
