@@ -1,52 +1,47 @@
 ---
 name: html
-description: Generate clean, dark-mode, structured HTML plans, architecture designs, reviews, and decision trees with embedded diagrams, tables, callouts, and interactive option selectors. Saves to omp-html/ and outputs a clickable file:/// link.
+description: Generate clean, minimalist, dark-gray HTML plans, architecture designs, reviews, and decision trees with large embedded diagrams, tables, callouts, and interactive option selectors. Plain dark-gray background, sharp edges (0px radius), strictly zero emojis. Saves to omp-html/ and outputs a clickable file:/// link.
 ---
 
-# HTML Plan & Review Generator Skill (`/html`)
+# Minimalist HTML Plan & Review Generator Skill (`/html`)
 
-This skill generates high-clarity, structured HTML documents for implementation plans, architecture designs, code reviews, and decision matrices.
+This skill generates structured, minimalist HTML documents for implementation plans, architecture designs, code reviews, and decision matrices.
 
-## Core Philosophy
+## Core Rules & Styling Requirements
 
-- **Document, Not a Website**: Looks like a beautifully formatted, structured `.md` document rendered in dark mode—never a marketing landing page or complex webapp.
+- **Plain Dark Gray Background**: The entire page background is plain dark gray (`#141416`). No centered isolated box or floating card container. Content flows naturally in a clean readability column (`max-width: 1080px; margin: 0 auto;`).
+- **No Rounded Corners**: Strict sharp minimalist aesthetic (`border-radius: 0 !important;` on all containers, buttons, callouts, tables, badges, code blocks, and form inputs).
+- **Strictly Zero Emojis**: Never use emojis anywhere in titles, badges, callouts, metadata, or text. Use clean uppercase text markers instead: `[PLAN]`, `[REVIEW]`, `[WARNING]`, `[ERROR]`, `[INFO]`, `[STATUS]`, `[TARGET]`, `[DECISION]`, `[COPY]`.
+- **Large & High-Visibility Graphs**: Mermaid.js diagrams must be rendered with high contrast, large readable node fonts (`14px`), spacious padding, and scaled to full container width (`width: 100%; min-height: 240px;`).
 - **Color Palette**:
-  - **Page Background**: Pure black (`#09090b` or `#000000`).
-  - **Container / Cards**: Dark gray (`#121215`, `#18181b`, `#1e1e24`).
-  - **Borders**: Subtle dark border (`#27272a`).
-  - **Text**: Crisp white (`#f4f4f5`, `#ffffff`), subtext in muted light gray (`#a1a1aa`).
-  - **Warnings**: High-contrast Yellow (`#eab308` / `#facc15` text on `#231c07` background with `#ca8a04` border).
-  - **Errors / Risks / Blockers**: High-contrast Red (`#ef4444` / `#f87171` text on `#2a0c0e` background with `#dc2626` border).
-  - **Success / Done**: Emerald Green (`#22c55e` / `#4ade80` on `#062814` with `#16a34a` border).
-  - **Info / Notes**: Cyan / Sky Blue (`#38bdf8` on `#082136` with `#0284c7` border).
-- **Concise & Terse**: Keep text short, precise, bullet-driven, and actionable. Avoid long narrative fluff.
-- **Embedded Visuals**: Include Mermaid.js diagrams directly via CDN for architecture, flowcharts, sequence diagrams, and timelines.
-- **Interactive Decisions**: When choices or questions are needed, embed interactive selection cards (radio/checkbox) with a 1-click "Copy Decision" prompt helper.
+  - **Page Background**: Dark gray (`#141416`).
+  - **Borders & Dividers**: Subtle borders (`#27272a` / `#333338`).
+  - **Text**: Crisp white (`#ffffff` / `#ececed`), subtext in muted light gray (`#a1a1aa`).
+  - **Warnings**: High-contrast Yellow (`#fef08a` text, `#231c07` background, `#854d0e` border, `#facc15` left accent line).
+  - **Errors / Risks / Blockers**: High-contrast Red (`#fca5a5` text, `#2a0c0e` background, `#991b1b` border, `#ef4444` left accent line).
+  - **Status Badges**: Sharp rectangular text pills (`STATUS: PENDING`, `STATUS: IN PROGRESS`, `STATUS: COMPLETED`, `STATUS: BLOCKED`).
+- **Concise & Terse**: Keep text short, precise, bullet-driven, and actionable. Avoid narrative fluff.
+- **Interactive Decisions**: When choices or questions are needed, embed interactive selection cards with a 1-click `[COPY DECISION TO CLIPBOARD]` prompt helper.
 
 ---
 
 ## File Storage & Linking Protocol
 
-Whenever generating an HTML plan/review:
-
 1. **Target Directory**: Locate the current project root and ensure `<project_root>/omp-html/` exists.
-2. **Gitignore Protection**: Ensure `<project_root>/omp-html/.gitignore` exists with the following content:
+2. **Gitignore Protection**: Ensure `<project_root>/omp-html/.gitignore` exists with:
    ```gitignore
    *
-   !.gitignore
+   __omp_shell(".gitignore")
    ```
-3. **File Naming**: Save the file as `<project_root>/omp-html/<slug-or-topic>.html` (e.g., `plan-auth-system.html`, `review-pr-42.html`).
-4. **Chat Response**: After writing the file, provide a concise chat summary and output the exact clickable `file:///` link:
+3. **File Naming**: Save the file as `<project_root>/omp-html/<slug>.html` (e.g., `plan-auth-system.html`, `review-pr-42.html`).
+4. **Chat Response**: After writing the file, provide a concise chat summary and output the clickable `file:///` link:
    ```text
    Plan generated: file:///C:/Users/Aryan/projects/Resumer-v2/omp-html/plan-auth-system.html
    ```
-   *(Ensure Windows paths use forward slashes `file:///C:/path/to/file.html` so all browsers open it on click).*
 
 ---
 
 ## Standard HTML Template Blueprint
-
-When generating an HTML plan, use the following self-contained structure:
 
 ```html
 <!DOCTYPE html>
@@ -55,7 +50,7 @@ When generating an HTML plan, use the following self-contained structure:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{TITLE}}</title>
-  <!-- Mermaid.js for embedded diagrams -->
+  <!-- Mermaid.js for Diagrams -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>
     mermaid.initialize({
@@ -63,122 +58,87 @@ When generating an HTML plan, use the following self-contained structure:
       theme: 'base',
       themeVariables: {
         darkMode: true,
-        background: '#0c0c0e',
+        background: '#0d0d0f',
         primaryColor: '#1e293b',
         primaryBorderColor: '#38bdf8',
-        primaryTextColor: '#f8fafc',
+        primaryTextColor: '#ffffff',
         lineColor: '#94a3b8',
-        secondaryColor: '#18181b',
+        secondaryColor: '#1e1e24',
         tertiaryColor: '#0f172a',
         mainBkg: '#1e293b',
         nodeBorder: '#38bdf8',
         clusterBkg: '#141418',
         clusterBorder: '#3f3f46',
         defaultLinkColor: '#94a3b8',
-        titleColor: '#f8fafc',
-        edgeLabelBackground: '#0c0c0e',
+        titleColor: '#ffffff',
+        edgeLabelBackground: '#0d0d0f',
         actorBkg: '#1e293b',
         actorBorder: '#38bdf8',
-        actorTextColor: '#f8fafc',
+        actorTextColor: '#ffffff',
         actorLineColor: '#64748b',
         signalColor: '#94a3b8',
-        signalTextColor: '#f8fafc',
+        signalTextColor: '#ffffff',
         labelBoxBkgColor: '#1e293b',
         labelBoxBorderColor: '#38bdf8',
-        labelTextColor: '#f8fafc',
-        loopTextColor: '#f8fafc',
-        noteBorderColor: '#ca8a04',
-        noteBkgColor: '#231c07',
-        noteTextColor: '#facc15',
+        labelTextColor: '#ffffff',
+        loopTextColor: '#ffffff',
+        fontSize: '14px',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }
     });
   </script>
   <style>
-    :root {
-      --bg-page: #09090b;
-      --bg-card: #121215;
-      --bg-card-hover: #18181c;
-      --bg-subtle: #1c1c21;
-      --border: #27272a;
-      --border-focus: #3f3f46;
-      --text-main: #f4f4f5;
-      --text-sub: #a1a1aa;
-      --text-muted: #71717a;
-      
-      --yellow-text: #facc15;
-      --yellow-bg: #231c07;
-      --yellow-border: #854d0e;
-      
-      --red-text: #f87171;
-      --red-bg: #2a0c0e;
-      --red-border: #991b1b;
-      
-      --green-text: #4ade80;
-      --green-bg: #062814;
-      --green-border: #166534;
-      
-      --cyan-text: #38bdf8;
-      --cyan-bg: #082136;
-      --cyan-border: #075985;
-      
-      --accent: #6366f1;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0 !important;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
     body {
-      background-color: var(--bg-page);
-      color: var(--text-main);
+      background-color: #141416;
+      color: #ececed;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       line-height: 1.6;
-      padding: 32px 16px;
-      display: flex;
-      justify-content: center;
+      padding: 40px 32px;
     }
 
-    .container {
-      width: 100%;
-      max-width: 900px;
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    .content {
+      max-width: 1080px;
+      margin: 0 auto;
     }
 
     /* Header */
     .header {
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #27272a;
       padding-bottom: 20px;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
     .header-badge {
       display: inline-block;
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border);
-      color: var(--accent);
-      margin-bottom: 10px;
+      letter-spacing: 1px;
+      padding: 4px 8px;
+      background: #1c1c20;
+      border: 1px solid #333338;
+      color: #38bdf8;
+      margin-bottom: 12px;
     }
     h1 {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 8px;
-      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+      letter-spacing: -0.4px;
     }
     .meta-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 20px;
       font-size: 13px;
-      color: var(--text-sub);
+      color: #a1a1aa;
     }
     .meta-item {
       display: flex;
@@ -188,59 +148,52 @@ When generating an HTML plan, use the following self-contained structure:
 
     /* Headings */
     h2 {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       color: #ffffff;
-      margin: 28px 0 14px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 1px solid var(--border);
+      margin: 36px 0 16px 0;
+      border-bottom: 1px solid #27272a;
       padding-bottom: 8px;
     }
     h3 {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       color: #e4e4e7;
-      margin: 18px 0 8px 0;
+      margin: 20px 0 8px 0;
     }
 
     p {
-      color: var(--text-main);
+      color: #d4d4d8;
       font-size: 14px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     ul, ol {
       margin-left: 20px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       font-size: 14px;
     }
     li {
       margin-bottom: 6px;
-      color: var(--text-main);
-    }
-    li::marker {
-      color: var(--text-muted);
+      color: #d4d4d8;
     }
 
-    /* Code and Pre */
     code {
       font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
-      font-size: 12.5px;
-      background-color: var(--bg-subtle);
-      border: 1px solid var(--border);
+      font-size: 13px;
+      background-color: #1f1f23;
+      border: 1px solid #333338;
       padding: 2px 6px;
-      border-radius: 4px;
       color: #f43f5e;
     }
     pre {
-      background-color: #0c0c0e;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px;
+      background-color: #0d0d0f;
+      border: 1px solid #27272a;
+      padding: 16px;
       overflow-x: auto;
-      margin-bottom: 16px;
+      margin: 16px 0;
     }
     pre code {
       background: transparent;
@@ -252,158 +205,163 @@ When generating an HTML plan, use the following self-contained structure:
 
     /* Callouts */
     .callout {
-      border-radius: 8px;
-      padding: 14px 16px;
-      margin: 16px 0;
+      padding: 14px 18px;
+      margin: 18px 0;
       font-size: 13.5px;
       border: 1px solid;
     }
     .callout-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
     }
     .callout-warning {
-      background-color: var(--yellow-bg);
-      border-color: var(--yellow-border);
-      color: var(--yellow-text);
+      background-color: #231c07;
+      border-color: #854d0e;
+      border-left: 4px solid #facc15;
+      color: #fef08a;
     }
     .callout-error {
-      background-color: var(--red-bg);
-      border-color: var(--red-border);
-      color: var(--red-text);
-    }
-    .callout-success {
-      background-color: var(--green-bg);
-      border-color: var(--green-border);
-      color: var(--green-text);
+      background-color: #2a0c0e;
+      border-color: #991b1b;
+      border-left: 4px solid #ef4444;
+      color: #fca5a5;
     }
     .callout-info {
-      background-color: var(--cyan-bg);
-      border-color: var(--cyan-border);
-      color: var(--cyan-text);
+      background-color: #082136;
+      border-color: #075985;
+      border-left: 4px solid #38bdf8;
+      color: #bae6fd;
     }
 
     /* Tables */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 16px 0;
+      margin: 20px 0;
       font-size: 13.5px;
     }
     th, td {
-      border: 1px solid var(--border);
-      padding: 10px 12px;
+      border: 1px solid #27272a;
+      padding: 11px 14px;
       text-align: left;
     }
     th {
-      background-color: var(--bg-subtle);
+      background-color: #1c1c20;
       color: #ffffff;
-      font-weight: 600;
-      font-size: 12.5px;
+      font-weight: 700;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     tr:nth-child(even) {
-      background-color: rgba(255, 255, 255, 0.015);
+      background-color: #18181c;
     }
     tr:hover {
-      background-color: var(--bg-card-hover);
+      background-color: #1f1f25;
     }
 
-    /* Status Pills */
-    .pill {
+    /* Status Badges */
+    .badge {
       display: inline-block;
       font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 9999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 7px;
       border: 1px solid;
     }
-    .pill-pending { background: #27272a; border-color: #3f3f46; color: #d4d4d8; }
-    .pill-progress { background: #172554; border-color: #1e40af; color: #60a5fa; }
-    .pill-done { background: #052e16; border-color: #166534; color: #4ade80; }
-    .pill-risk { background: #450a0a; border-color: #991b1b; color: #f87171; }
+    .badge-pending { background: #1c1c20; border-color: #333338; color: #a1a1aa; }
+    .badge-progress { background: #082136; border-color: #075985; color: #38bdf8; }
+    .badge-done { background: #062814; border-color: #166534; color: #4ade80; }
+    .badge-risk { background: #2a0c0e; border-color: #991b1b; color: #f87171; }
 
     /* Mermaid diagrams container */
     .diagram-container {
-      background-color: #0c0c0e;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-      margin: 16px 0;
+      background-color: #0d0d0f;
+      border: 1px solid #27272a;
+      padding: 28px 20px;
+      margin: 20px 0;
+      overflow-x: auto;
       display: flex;
       justify-content: center;
+    }
+    .mermaid {
+      width: 100%;
+      min-height: 240px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .mermaid svg {
+      width: 100% !important;
+      max-width: 980px !important;
+      height: auto !important;
+      min-height: 220px !important;
     }
 
     /* Interactive Decision Cards */
     .decision-block {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px;
-      margin: 20px 0;
+      background: #18181c;
+      border: 1px solid #27272a;
+      padding: 20px;
+      margin: 24px 0;
     }
     .decision-title {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       color: #ffffff;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .options-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .option-label {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      padding: 12px 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #141416;
+      border: 1px solid #27272a;
       cursor: pointer;
-      transition: border-color 0.15s ease;
     }
     .option-label:hover {
-      border-color: var(--border-focus);
-      background: var(--bg-card-hover);
+      border-color: #3f3f46;
+      background: #1c1c20;
     }
     .option-label input {
       margin-top: 3px;
-      accent-color: var(--accent);
     }
     .option-content {
       flex: 1;
     }
     .option-name {
-      font-weight: 600;
+      font-weight: 700;
       font-size: 13.5px;
       color: #ffffff;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
     .option-desc {
       font-size: 12.5px;
-      color: var(--text-sub);
+      color: #a1a1aa;
     }
 
     .copy-button {
       background-color: #27272a;
       color: #ffffff;
       border: 1px solid #3f3f46;
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 600;
+      padding: 10px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s ease;
     }
     .copy-button:hover {
       background-color: #3f3f46;
@@ -411,30 +369,27 @@ When generating an HTML plan, use the following self-contained structure:
     .copy-preview {
       font-family: ui-monospace, monospace;
       font-size: 12px;
-      background: #000000;
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      border-radius: 6px;
+      background: #0d0d0f;
+      border: 1px solid #27272a;
+      padding: 10px 14px;
       color: #a1a1aa;
-      margin-top: 10px;
+      margin-top: 12px;
       white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
+  <div class="content">
     <header class="header">
-      <span class="header-badge">Architecture & Implementation Plan</span>
+      <span class="header-badge">[PLAN] IMPLEMENTATION</span>
       <h1>{{Plan Title}}</h1>
       <div class="meta-row">
-        <span class="meta-item">📅 {{Date}}</span>
-        <span class="meta-item">🎯 Status: <span class="pill pill-progress">In Review</span></span>
-        <span class="meta-item">📁 Target: <code>{{Project / Module}}</code></span>
+        <span class="meta-item">DATE: {{Date}}</span>
+        <span class="meta-item">STATUS: <span class="badge badge-progress">IN REVIEW</span></span>
+        <span class="meta-item">TARGET: <code>{{Project / Module}}</code></span>
       </div>
     </header>
 
-    <!-- Content Sections -->
     <section>
       <h2>1. Overview & Objectives</h2>
       <p>{{Terse 2-3 sentence overview of what is being implemented and why.}}</p>
@@ -461,8 +416,8 @@ When generating an HTML plan, use the following self-contained structure:
           <tr>
             <th style="width: 80px;">Phase</th>
             <th>Task & Scope</th>
-            <th style="width: 200px;">Files Touched</th>
-            <th style="width: 100px;">Status</th>
+            <th style="width: 240px;">Files Touched</th>
+            <th style="width: 120px;">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -470,30 +425,28 @@ When generating an HTML plan, use the following self-contained structure:
             <td><strong>01</strong></td>
             <td>Setup Schema & Types</td>
             <td><code>src/types/auth.ts</code></td>
-            <td><span class="pill pill-pending">Pending</span></td>
+            <td><span class="badge badge-pending">PENDING</span></td>
           </tr>
         </tbody>
       </table>
     </section>
 
-    <!-- Warnings / Errors Callouts -->
     <section>
       <h2>4. Risks & Considerations</h2>
       <div class="callout callout-warning">
-        <div class="callout-title">⚠️ Breaking Change Warning</div>
+        <div class="callout-title">[WARNING] Breaking Change</div>
         Modifying this schema requires updating downstream callers in <code>src/services/api.ts</code>.
       </div>
       <div class="callout callout-error">
-        <div class="callout-title">⛔ Blocker / Critical Risk</div>
+        <div class="callout-title">[ERROR] Critical Risk / Blocker</div>
         Token migration requires backwards compatibility fallback for existing session cookies.
       </div>
     </section>
 
-    <!-- Interactive Decision Block (if user choices needed) -->
     <section>
       <h2>5. Architecture Decisions Needed</h2>
       <div class="decision-block">
-        <div class="decision-title">Select Authentication Mechanism:</div>
+        <div class="decision-title">[DECISION] Select Authentication Mechanism:</div>
         <div class="options-grid">
           <label class="option-label">
             <input type="radio" name="auth_choice" value="JWT (Stateless)" checked onchange="updateDecisionPreview()">
@@ -510,7 +463,7 @@ When generating an HTML plan, use the following self-contained structure:
             </div>
           </label>
         </div>
-        <button class="copy-button" onclick="copyDecision()">📋 Copy Decision to Clipboard</button>
+        <button class="copy-button" onclick="copyDecision()">[COPY DECISION TO CLIPBOARD]</button>
         <div class="copy-preview" id="decisionPreview">Selected: Option A: Stateless JWT Bearer Tokens</div>
       </div>
     </section>
@@ -528,25 +481,10 @@ When generating an HTML plan, use the following self-contained structure:
       const preview = document.getElementById('decisionPreview');
       if (preview) {
         navigator.clipboard.writeText(preview.innerText);
-        alert('Copied to clipboard: ' + preview.innerText);
+        alert('Copied decision: ' + preview.innerText);
       }
     }
   </script>
 </body>
 </html>
 ```
-
----
-
-## Instructions for the Model
-
-1. **Triggered via `/html` or when requested**: When the user requests an HTML plan, architecture review, or uses `/html <prompt>`, generate a standalone `.html` file matching the template styling and structure.
-2. **Always include**:
-   - Clean dark styling (pure black `#09090b` background, `#121215` card).
-   - Crisp typography, pill tags, and monospace file/code elements.
-   - At least one Mermaid diagram when illustrating workflows, architectures, dependencies, or phase lifecycles.
-   - Tables for tasks, files, test plans, or schema comparisons.
-   - Distinct Yellow/Red callout boxes for warnings and blockers.
-   - Interactive radio/checkbox decision blocks whenever options or clarifications are presented.
-3. **Save location**: `<project_root>/omp-html/<slug>.html`. Ensure `omp-html/.gitignore` exists.
-4. **Chat output**: Print `file:///` clickable link.
