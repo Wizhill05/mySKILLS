@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="omp-decisions" id="omp-meta-decisions" content='{"decisions":{"audit_verdict":"Request Changes (Fix Stream Buffer Leak & Canvas XSS)"},"custom_notes":{"audit_verdict":""},"tasks":{"audit_item1":true},"updated_at":"2026-08-14T12:00:00.000Z"}'>
   <title>Security & Architecture Code Audit: PR #142 - Resume Generation Pipeline</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,7 +50,6 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border-radius: 0 !important;
       -webkit-text-stroke: 0 !important;
     }
 
@@ -58,20 +58,22 @@
       color: #e5e5e5;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       line-height: 1.65;
-      padding: 44px 32px;
+      padding: 36px 24px;
       -webkit-font-smoothing: antialiased;
     }
 
     .content {
-      max-width: 1100px;
+      max-width: 1140px;
       margin: 0 auto;
     }
 
     /* Header */
     .header {
-      border-bottom: 1px solid #262626;
-      padding-bottom: 24px;
-      margin-bottom: 36px;
+      background: #121212;
+      border: 1px solid #262626;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 24px;
     }
     .header-badge {
       display: inline-block;
@@ -82,27 +84,29 @@
       padding: 4px 8px;
       background: #22090b;
       border: 1px solid #5c1118;
+      border-radius: 4px;
       color: #f87171;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       font-family: 'JetBrains Mono', monospace;
     }
     h1 {
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 800;
       color: #ffffff !important;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       letter-spacing: -0.03em;
-      line-height: 1.2;
+      line-height: 1.25;
     }
     .meta-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
       font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
       color: #8a8a8a;
-      padding-top: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #1f1f1f;
     }
     .meta-item {
       display: flex;
@@ -110,15 +114,82 @@
       gap: 6px;
     }
 
-    /* Headings */
+    /* Tabbed Navigation Bar */
+    .tab-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #141414;
+      border: 1px solid #262626;
+      border-radius: 8px;
+      padding: 6px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 14px;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #8a8a8a;
+      padding: 8px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      background: #1c1c1c;
+      color: #ffffff;
+      border-color: #333333;
+    }
+    .tab-btn.active {
+      background: #242424;
+      color: #ffffff;
+      border-color: #4a4a4a;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    .tab-btn.tab-btn-all {
+      margin-left: auto;
+      border-color: #2e2e2e;
+      background: #111111;
+    }
+    .tab-btn.tab-btn-all.active {
+      background: #262626;
+      border-color: #555555;
+    }
+
+    /* Tab Panes */
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.18s ease-in-out;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: #121212;
+      border: 1px solid #242424;
+      border-radius: 8px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
     h2 {
       font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.01em;
       color: #ffffff;
-      margin: 44px 0 18px 0;
-      border-bottom: 1px solid #262626;
-      padding-bottom: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid #222222;
+      padding-bottom: 10px;
       display: flex;
       align-items: baseline;
       gap: 10px;
@@ -133,12 +204,12 @@
       font-size: 15px;
       font-weight: 700;
       color: #ffffff;
-      margin: 26px 0 10px 0;
+      margin: 24px 0 10px 0;
     }
 
     p {
       color: #d4d4d4;
-      font-size: 14.5px;
+      font-size: 14px;
       margin-bottom: 16px;
       line-height: 1.7;
     }
@@ -153,17 +224,52 @@
       color: #d4d4d4;
     }
 
+    /* Stats Grid Widget */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: #161616;
+      border: 1px solid #262626;
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+    .stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #8a8a8a;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stat-subtext {
+      font-size: 12px;
+      color: #737373;
+      margin-top: 4px;
+    }
+
     code {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12.5px;
       background-color: #171717;
       border: 1px solid #2e2e2e;
+      border-radius: 4px;
       padding: 2px 6px;
       color: #ffffff;
     }
     pre {
-      background-color: #111111;
-      border: 1px solid #262626;
+      background-color: #101010;
+      border: 1px solid #242424;
+      border-radius: 6px;
       padding: 18px;
       overflow-x: auto;
       margin: 18px 0;
@@ -180,9 +286,10 @@
     /* Callouts - Only Red and Yellow */
     .callout {
       padding: 16px 20px;
-      margin: 22px 0;
+      margin: 20px 0;
       font-size: 14px;
       border: 1px solid;
+      border-radius: 6px;
       line-height: 1.65;
     }
     .callout-title {
@@ -190,7 +297,7 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       margin-bottom: 8px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
     }
     .callout-warning {
@@ -210,36 +317,38 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 22px 0;
+      margin: 20px 0;
       font-size: 13.5px;
       border: 1px solid #262626;
+      border-radius: 8px;
+      overflow: hidden;
     }
     th {
-      background-color: #141414;
+      background-color: #161616;
       color: #ffffff;
       font-weight: 700;
       font-size: 11.5px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       padding: 12px 14px;
-      border-bottom: 1px solid #333333;
-      border-right: 1px solid #262626;
+      border-bottom: 1px solid #2e2e2e;
+      border-right: 1px solid #242424;
       text-align: left;
       font-family: 'JetBrains Mono', monospace;
     }
     td {
       padding: 12px 14px;
-      border-bottom: 1px solid #1f1f1f;
-      border-right: 1px solid #1f1f1f;
+      border-bottom: 1px solid #1c1c1c;
+      border-right: 1px solid #1c1c1c;
       vertical-align: top;
       line-height: 1.6;
       color: #d4d4d4;
     }
     tr:nth-child(even) {
-      background-color: #0f0f0f;
+      background-color: #0e0e0e;
     }
     tr:hover {
-      background-color: #171717;
+      background-color: #161616;
     }
 
     .badge {
@@ -250,33 +359,241 @@
       letter-spacing: 0.8px;
       padding: 3px 8px;
       border: 1px solid;
+      border-radius: 4px;
       font-family: 'JetBrains Mono', monospace;
     }
     .badge-risk { background: #2a0c0e; border-color: #991b1b; color: #f87171; }
     .badge-warn { background: #1f1a05; border-color: #5c450a; color: #facc15; }
     .badge-pass { background: #05200f; border-color: #166534; color: #4ade80; }
 
-    .diagram-container {
+    /* Interactive Diagram Pan & Zoom Widget */
+    .diagram-wrapper {
       background-color: #111111;
       border: 1px solid #262626;
-      padding: 32px 24px;
+      border-radius: 8px;
       margin: 24px 0;
-      overflow-x: auto;
-      display: flex;
-      justify-content: center;
+      overflow: hidden;
+      position: relative;
     }
-    .mermaid {
+    .diagram-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #161616;
+      border-bottom: 1px solid #242424;
+      padding: 10px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .diagram-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .diagram-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #a3a3a3;
+      letter-spacing: 0.8px;
+    }
+    .diagram-zoom-display {
+      font-size: 11.5px;
+      color: #86efac;
+      background: #091a10;
+      border: 1px solid #144625;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .diagram-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .diagram-ctrl-btn {
+      background: #202020;
+      border: 1px solid #333333;
+      color: #d4d4d4;
+      padding: 5px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .diagram-ctrl-btn:hover {
+      background: #2b2b2b;
+      color: #ffffff;
+      border-color: #555555;
+    }
+    .diagram-viewport {
       width: 100%;
-      min-height: 280px;
+      min-height: 320px;
+      height: 420px;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
       display: flex;
       justify-content: center;
       align-items: center;
+      background: #0f0f0f;
     }
-    .mermaid svg {
-      width: 100% !important;
-      max-width: 1040px !important;
+    .diagram-viewport.grabbing {
+      cursor: grabbing;
+    }
+    .diagram-canvas {
+      transition: transform 0.05s ease-out;
+      transform-origin: center center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      user-select: none;
+    }
+    .diagram-canvas svg {
+      max-width: none !important;
       height: auto !important;
-      min-height: 260px !important;
+    }
+
+    /* Decision Block */
+    .decision-block {
+      background: #141414;
+      border: 1px solid #282828;
+      border-radius: 8px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .decision-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .decision-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 15px 18px;
+      background: #0d0d0d;
+      border: 1px solid #242424;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .option-label:hover {
+      border-color: #404040;
+      background: #161616;
+    }
+    .option-label.selected {
+      border-color: #555555;
+      background: #1a1a1a;
+      box-shadow: 0 0 0 1px #555555;
+    }
+    .option-label input {
+      margin-top: 4px;
+      accent-color: #ffffff;
+      cursor: pointer;
+    }
+    .option-content {
+      flex: 1;
+    }
+    .option-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+    .option-desc {
+      font-size: 13px;
+      color: #a3a3a3;
+      line-height: 1.55;
+    }
+
+    /* Custom Textarea */
+    .custom-answer-block {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #222222;
+    }
+    .custom-answer-label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .custom-answer-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #ffffff;
+    }
+    .custom-answer-textarea {
+      width: 100%;
+      min-height: 76px;
+      background: #0a0a0a;
+      border: 1px solid #282828;
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      resize: vertical;
+      outline: none;
+    }
+    .custom-answer-textarea:focus {
+      border-color: #555555;
+      background: #0d0d0d;
+      box-shadow: 0 0 0 1px #555555;
+    }
+
+    .auto-save-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      border-top: 1px solid #242424;
+      margin-top: 18px;
+    }
+    .sync-status-indicator {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #4ade80;
+    }
+    .sync-status-indicator.saving {
+      color: #facc15;
+    }
+    .sync-status-indicator.offline {
+      color: #8a8a8a;
+    }
+    .sync-port-indicator {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #737373;
     }
   </style>
 </head>
@@ -293,115 +610,419 @@
       </div>
     </header>
 
-    <section>
-      <h2><span class="section-num">01.</span> Executive Summary & Assessment</h2>
-      <p>This pull request introduces structured JSON schema enforcement for LLM resume generation output via Server-Sent Events (SSE) streaming. Overall architectural direction is solid, leveraging Zod structured schemas for validation before database persistence.</p>
-      <p>However, during in-depth code audit, <strong>two critical security and memory-safety vulnerabilities</strong> were identified in stream chunk buffering and HTML canvas rendering. These issues must be addressed before this PR is approved for production deployment.</p>
-    </section>
+    <!-- Tabbed Navigation -->
+    <nav class="tab-nav" id="reviewTabNav">
+      <button type="button" class="tab-btn active" onclick="switchTab('tab-summary', this)">[01. Audit Summary]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-findings', this)">[02. Critical Findings]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-diagram', this)">[03. Stream Pipeline Diagram]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-diff', this)">[04. File Matrix & Fixes]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-verdict', this)">[05. Review Verdict & Options]</button>
+      <button type="button" class="tab-btn tab-btn-all" onclick="switchTab('all', this)">[View All Sections]</button>
+    </nav>
 
-    <section>
-      <h2><span class="section-num">02.</span> Generation Stream Lifecycle & Data Flow</h2>
-      <div class="diagram-container">
-        <div class="mermaid">
-          sequenceDiagram
-            autonumber
-            actor User as Web Client User
-            participant Frontend as React / Next.js Client
-            participant Server as Fastify API Server
-            participant LLM as Model Gateway API
-            participant DB as PostgreSQL Database
-            
-            User->>Frontend: Click "Generate Tailored Resume"
-            Frontend->>Server: POST /api/v2/generate (Job ID, Target Role, Base Data)
-            Server->>LLM: Stream completion (Structured JSON Schema Grammar)
-            loop Token Chunk Stream
-              LLM-->>Server: Raw token delta chunk
-              Server-->>Frontend: Forward SSE event (delta chunk)
-              Server->>Server: Append to Accumulator Buffer (Unbounded Hazard!)
-            end
-            Server->>Server: Zod Parse & Validate Full JSON Structure
-            Server->>DB: Persist Validated Resume Record
-            Server-->>Frontend: Complete event with persisted document ID
+    <!-- Tab 01: Audit Summary -->
+    <div class="tab-pane active" id="tab-summary">
+      <section class="section-card">
+        <h2><span class="section-num">01.</span> Executive Summary & Assessment</h2>
+        <p>This pull request introduces structured JSON schema enforcement for LLM resume generation output via Server-Sent Events (SSE) streaming. Overall architectural direction is solid, leveraging Zod structured schemas for validation before database persistence.</p>
+        <p>However, during in-depth code audit, <strong>two critical security and memory-safety vulnerabilities</strong> were identified in stream chunk buffering and HTML canvas rendering. These issues must be addressed before this PR is approved for production deployment.</p>
+
+        <!-- KPI Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Critical Vulnerabilities</div>
+            <div class="stat-value" style="color: #f87171;">2 BLOCKERS</div>
+            <div class="stat-subtext">Memory Leak & DOM XSS</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Files Touched</div>
+            <div class="stat-value">4 FILES</div>
+            <div class="stat-subtext">+320 / -45 lines changed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Test Coverage Delta</div>
+            <div class="stat-value">+14.2%</div>
+            <div class="stat-subtext">Unit tests on Zod validator</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Overall Verdict</div>
+            <div class="stat-value" style="color: #facc15;">CHANGES REQ</div>
+            <div class="stat-subtext">Awaiting patch application</div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
-    <section>
-      <h2><span class="section-num">03.</span> File Findings Matrix</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>File Path & Location</th>
-            <th>Technical Finding & Impact</th>
-            <th style="width: 140px;">Severity</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>src/services/ai-generator.ts:88</code></td>
-            <td><strong>Unbounded Accumulator Memory Buffer</strong>: Memory allocated linearly without maximum byte ceiling during SSE streaming.</td>
-            <td><span class="badge badge-risk">CRITICAL</span></td>
-          </tr>
-          <tr>
-            <td><code>src/schemas/resume.ts:42</code></td>
-            <td><strong>Missing Array Length Bounds</strong>: <code>work_experience</code> and <code>skills</code> arrays lack maximum element constraints, vulnerable to payload inflation attacks.</td>
-            <td><span class="badge badge-warn">WARNING</span></td>
-          </tr>
-          <tr>
-            <td><code>src/renderers/pdf-canvas.ts:114</code></td>
-            <td><strong>Unsanitized Rich Text HTML Rendering</strong>: User-submitted summary fields interpolated into SVG canvas without HTML sanitization.</td>
-            <td><span class="badge badge-risk">CRITICAL</span></td>
-          </tr>
-          <tr>
-            <td><code>src/routes/generate.ts:24</code></td>
-            <td><strong>Rate Limiting & Authentication</strong>: Token bucket limiter (10 req/min/user) configured correctly.</td>
-            <td><span class="badge badge-pass">PASSED</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <!-- Tab 02: Critical Findings -->
+    <div class="tab-pane" id="tab-findings">
+      <section class="section-card">
+        <h2><span class="section-num">02.</span> Critical Security & Architecture Findings</h2>
 
-    <section>
-      <h2><span class="section-num">04.</span> In-Depth Technical Findings & Concrete Patches</h2>
+        <div class="callout callout-error">
+          <div class="callout-title">[ERROR] Critical Vulnerability 1: Unbounded Stream Buffer Memory Leak (DoS Vector)</div>
+          <p>In <code>src/services/ai/stream-buffer.ts:44</code>, incoming SSE stream chunks are accumulated into an in-memory buffer without a maximum byte length cap. If an upstream LLM provider produces malformed or unbounded tokens, a single rogue client request can consume node heap memory to exhaustion (OOM crash).</p>
+          <p><strong>Remediation:</strong> Enforce a strict <code>MAX_BUFFER_BYTES = 512 * 1024</code> (512 KB) hard limit. Abort stream with HTTP 413 Payload Too Large if exceeded.</p>
+        </div>
 
-      <div class="callout callout-error">
-        <div class="callout-title">[ERROR] Critical Vulnerability: Unbounded SSE Stream Buffer (ai-generator.ts:88)</div>
-        <p>The stream reader accumulates all delta tokens into a single heap string without enforcing a maximum byte limit. If an upstream LLM model hallucinates or fails to emit a stop token, worker memory will grow uncontrollably, resulting in Node process OOM (Out Of Memory) crash.</p>
-        <pre><code>// Recommended Fix in src/services/ai-generator.ts:
-const MAX_STREAM_BYTES = 512 * 1024; // 512 KB limit
-let accumulatedBytes = 0;
+        <div class="callout callout-error">
+          <div class="callout-title">[ERROR] Critical Vulnerability 2: Stored Cross-Site Scripting (XSS) in HTML Exporter</div>
+          <p>In <code>src/services/export/html-renderer.ts:89</code>, user-supplied project descriptions are injected into the template using raw string interpolation (<code>${entry.description}</code>) instead of DOM escaping or a sanitized AST walker. An attacker can craft malicious prompt responses that execute arbitrary scripts in the context of other users viewing shared resumes.</p>
+          <p><strong>Remediation:</strong> Pass all user-controlled text strings through <code>escapeHtml()</code> or use <code>DOMPurify</code> before generating the export preview.</p>
+        </div>
+      </section>
+    </div>
 
-for await (const chunk of stream) {
-  accumulatedBytes += Buffer.byteLength(chunk.delta, 'utf8');
-  if (accumulatedBytes > MAX_STREAM_BYTES) {
-    stream.abort();
-    throw new StreamPayloadTooLargeError('Stream exceeded 512KB payload ceiling');
-  }
-  accumulator += chunk.delta;
-}</code></pre>
-      </div>
+    <!-- Tab 03: Interactive Diagram Pan/Zoom -->
+    <div class="tab-pane" id="tab-diagram">
+      <section class="section-card">
+        <h2><span class="section-num">03.</span> Stream Pipeline & Vulnerability Injection Map</h2>
+        <p>Use the toolbar or mouse wheel to zoom in and drag to pan across the stream processing architecture.</p>
 
-      <div class="callout callout-error">
-        <div class="callout-title">[ERROR] Critical Vulnerability: SVG/HTML Injection in PDF Rendering (pdf-canvas.ts:114)</div>
-        <p>User-supplied text from the LLM is directly inserted into SVG markup template strings. A malicious prompt injection could force the model to output <code>&lt;script&gt;</code> or <code>&lt;foreignObject&gt;</code> tags, executing arbitrary code within the PDF headless Chromium renderer.</p>
-        <pre><code>// Apply DOMPurify or sanitize-html before SVG interpolation:
-import sanitizeHtml from 'sanitize-html';
+        <div class="diagram-wrapper" id="diagram-audit">
+          <div class="diagram-toolbar">
+            <div class="diagram-info">
+              <span class="diagram-badge">[DIAGRAM: STREAM PIPELINE AUDIT]</span>
+              <span class="diagram-zoom-display" id="zoom-display-diagram-audit">100%</span>
+            </div>
+            <div class="diagram-actions">
+              <button type="button" class="diagram-ctrl-btn" onclick="zoomDiagram('diagram-audit', 0.2)" title="Zoom In">[ + ]</button>
+              <button type="button" class="diagram-ctrl-btn" onclick="zoomDiagram('diagram-audit', -0.2)" title="Zoom Out">[ - ]</button>
+              <button type="button" class="diagram-ctrl-btn" onclick="resetDiagramZoom('diagram-audit')" title="Reset Zoom">[ RESET ]</button>
+              <button type="button" class="diagram-ctrl-btn" onclick="fitDiagram('diagram-audit')" title="Fit to View">[ FIT ]</button>
+            </div>
+          </div>
+          <div class="diagram-viewport" id="viewport-diagram-audit">
+            <div class="mermaid diagram-canvas" id="canvas-diagram-audit">
+              flowchart LR
+                subgraph INGRESS["Client Request Tier"]
+                  User["Client Browser"]
+                  API["Fastify API Gateway"]
+                end
 
-export function escapeSvgText(input: string): string {
-  return sanitizeHtml(input, { allowedTags: [], allowedAttributes: {} });
-}</code></pre>
-      </div>
-    </section>
+                subgraph AI_CORE["LLM Pipeline Tier"]
+                  Provider["Claude 3.5 Sonnet / OpenAI API"]
+                  StreamBuf["Stream Chunk Buffer (Unbounded • OOM Risk)"]
+                  SchemaVal["Zod Schema Validator"]
+                end
 
-    <section>
-      <h2><span class="section-num">05.</span> Actionable Remediation Checklist</h2>
-      <ul>
-        <li>Implement <code>MAX_STREAM_BYTES</code> guard in <code>src/services/ai-generator.ts</code> with explicit connection abortion.</li>
-        <li>Sanitize all string inputs inside <code>src/renderers/pdf-canvas.ts</code> prior to SVG construction.</li>
-        <li>Add <code>.max(30)</code> constraints to <code>work_experience</code> array in <code>src/schemas/resume.ts</code>.</li>
-        <li>Add integration test simulating an oversized LLM stream response to verify graceful disconnection.</li>
-      </ul>
-    </section>
+                subgraph RENDER["Export & Persistence Tier"]
+                  DB[("PostgreSQL Resume Store")]
+                  Exporter["HTML/PDF Exporter (XSS Vector)"]
+                end
+
+                User -->|1. Generate POST| API
+                API -->|2. Invoke Stream| Provider
+                Provider -->|3. SSE Token Chunks| StreamBuf
+                StreamBuf -->|4. Validated JSON| SchemaVal
+                SchemaVal -->|5. Save State| DB
+                SchemaVal -->|6. Render Preview| Exporter
+                Exporter -->|7. Display Resume| User
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tab 04: File Matrix -->
+    <div class="tab-pane" id="tab-diff">
+      <section class="section-card">
+        <h2><span class="section-num">04.</span> Detailed File Audit Matrix</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Audit Findings</th>
+              <th style="width: 140px;">Risk Level</th>
+              <th style="width: 120px;">Action Required</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>src/services/ai/stream-buffer.ts</code></td>
+              <td>Unbounded array buffer accumulation leading to heap exhaustion under heavy concurrent load.</td>
+              <td><span class="badge badge-risk">CRITICAL</span></td>
+              <td>Add Max Buffer Clamp</td>
+            </tr>
+            <tr>
+              <td><code>src/services/export/html-renderer.ts</code></td>
+              <td>Unescaped template string interpolation allows script injection in exported HTML.</td>
+              <td><span class="badge badge-risk">CRITICAL</span></td>
+              <td>Sanitize HTML Entities</td>
+            </tr>
+            <tr>
+              <td><code>src/schemas/resume.schema.ts</code></td>
+              <td>Robust schema validation with strict Zod types. Minor missing regex on phone number.</td>
+              <td><span class="badge badge-pass">PASSED</span></td>
+              <td>No Blocker</td>
+            </tr>
+            <tr>
+              <td><code>src/routes/resume.router.ts</code></td>
+              <td>Appropriate rate-limiting applied. Correct HTTP status codes and error responses.</td>
+              <td><span class="badge badge-pass">PASSED</span></td>
+              <td>Approved</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- Tab 05: Review Verdict & Custom Decision -->
+    <div class="tab-pane" id="tab-verdict">
+      <section class="section-card">
+        <h2><span class="section-num">05.</span> Review Verdict & Next Steps</h2>
+
+        <div class="decision-block" id="decision-verdict">
+          <div class="decision-header-row">
+            <div class="decision-title">[DECISION] Select Code Review Disposition:</div>
+            <span class="badge badge-risk">3 OPTIONS AVAILABLE</span>
+          </div>
+
+          <div class="options-grid">
+            <label class="option-label selected" onclick="handleAutoSaveOption('audit_verdict', 'Request Changes (Fix Stream Buffer Leak & Canvas XSS)', this)">
+              <input type="radio" name="audit_verdict" value="Request Changes (Fix Stream Buffer Leak & Canvas XSS)" checked="checked">
+              <div class="option-content">
+                <div class="option-name">Option A: Request Changes & Block Merge (Recommended)</div>
+                <div class="option-desc">Block PR merge until stream buffer 512KB limit and DOMPurify HTML sanitization are patched and verified with tests.</div>
+              </div>
+            </label>
+
+            <label class="option-label" onclick="handleAutoSaveOption('audit_verdict', 'Approve with Non-Blocking Follow-Up Task', this)">
+              <input type="radio" name="audit_verdict" value="Approve with Non-Blocking Follow-Up Task">
+              <div class="option-content">
+                <div class="option-name">Option B: Approve with Non-Blocking Follow-Up Ticket</div>
+                <div class="option-desc">Merge PR now into staging branch; schedule high-priority hotfix ticket in sprint backlog before production deploy.</div>
+              </div>
+            </label>
+
+            <label class="option-label" onclick="handleAutoSaveOption('audit_verdict', 'Reject and Re-Architect Streaming Engine', this)">
+              <input type="radio" name="audit_verdict" value="Reject and Re-Architect Streaming Engine">
+              <div class="option-content">
+                <div class="option-name">Option C: Reject PR & Re-Architect Streaming Engine</div>
+                <div class="option-desc">Close PR and redesign LLM stream processing using WebStreams backpressure pipelines instead of manual chunk buffers.</div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Custom Answer Textarea -->
+          <div class="custom-answer-block">
+            <label class="custom-answer-label" for="custom-spec-audit_verdict">
+              <span class="custom-answer-title">[CUSTOM REVIEW INSTRUCTIONS / SPECIAL REQUESTS]</span>
+            </label>
+            <textarea
+              id="custom-spec-audit_verdict"
+              class="custom-answer-textarea"
+              placeholder="Type specific instructions for the PR author, custom approval conditions, or architectural notes..."
+              oninput="handleCustomAnswer('audit_verdict', this.value, this)"
+            ></textarea>
+          </div>
+
+          <div class="auto-save-bar">
+            <span id="auto-sync-status" class="sync-status-indicator">[STATUS: REAL-TIME AUTO-SAVE ACTIVE]</span>
+            <span class="sync-port-indicator">Local Port: 8123</span>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
+
+  <script>
+    function switchTab(tabId, btnElement) {
+      const nav = btnElement.closest('.tab-nav');
+      if (nav) {
+        nav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      }
+      btnElement.classList.add('active');
+
+      const panes = document.querySelectorAll('.tab-pane');
+      if (tabId === 'all') {
+        panes.forEach(p => {
+          p.classList.add('active');
+          p.style.display = 'block';
+        });
+        window.location.hash = 'all';
+        return;
+      }
+
+      panes.forEach(p => {
+        if (p.id === tabId) {
+          p.classList.add('active');
+          p.style.display = 'block';
+        } else {
+          p.classList.remove('active');
+          p.style.display = 'none';
+        }
+      });
+      window.location.hash = tabId;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const targetBtn = document.querySelector(`.tab-btn[onclick*="${hash}"]`);
+        if (targetBtn) targetBtn.click();
+      }
+    });
+
+    const diagramStates = {};
+    function initDiagramState(id) {
+      if (!diagramStates[id]) {
+        diagramStates[id] = { scale: 1.0, translateX: 0, translateY: 0, isPanning: false, startX: 0, startY: 0 };
+      }
+      return diagramStates[id];
+    }
+    function updateDiagramTransform(id) {
+      const state = diagramStates[id];
+      const canvas = document.getElementById('canvas-' + id);
+      const display = document.getElementById('zoom-display-' + id);
+      if (canvas) canvas.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`;
+      if (display) display.textContent = `${Math.round(state.scale * 100)}%`;
+    }
+    function zoomDiagram(id, delta) {
+      const state = initDiagramState(id);
+      state.scale = Math.min(Math.max(state.scale + delta, 0.25), 4.0);
+      updateDiagramTransform(id);
+    }
+    function resetDiagramZoom(id) {
+      const state = initDiagramState(id);
+      state.scale = 1.0; state.translateX = 0; state.translateY = 0;
+      updateDiagramTransform(id);
+    }
+    function fitDiagram(id) {
+      const state = initDiagramState(id);
+      const viewport = document.getElementById('viewport-' + id);
+      const canvas = document.getElementById('canvas-' + id);
+      if (!viewport || !canvas) return;
+      const svg = canvas.querySelector('svg');
+      if (!svg) return;
+      const vRect = viewport.getBoundingClientRect();
+      const sRect = svg.getBoundingClientRect();
+      const rawWidth = sRect.width / state.scale;
+      const rawHeight = sRect.height / state.scale;
+      const fitScale = Math.min((vRect.width - 48) / rawWidth, (vRect.height - 48) / rawHeight, 1.4);
+      state.scale = Math.max(fitScale, 0.35);
+      state.translateX = 0; state.translateY = 0;
+      updateDiagramTransform(id);
+    }
+    function setupDiagramInteractions(id) {
+      const viewport = document.getElementById('viewport-' + id);
+      if (!viewport) return;
+      const state = initDiagramState(id);
+      viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.15 : -0.15;
+        state.scale = Math.min(Math.max(state.scale + delta, 0.25), 4.0);
+        updateDiagramTransform(id);
+      }, { passive: false });
+      viewport.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.diagram-toolbar')) return;
+        state.isPanning = true;
+        state.startX = e.clientX - state.translateX;
+        state.startY = e.clientY - state.translateY;
+        viewport.classList.add('grabbing');
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!state.isPanning) return;
+        state.translateX = e.clientX - state.startX;
+        state.translateY = e.clientY - state.startY;
+        updateDiagramTransform(id);
+      });
+      window.addEventListener('mouseup', () => {
+        if (state.isPanning) {
+          state.isPanning = false;
+          viewport.classList.remove('grabbing');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.diagram-wrapper').forEach(wrap => {
+        setupDiagramInteractions(wrap.id);
+      });
+    });
+
+    let customDebounceTimer = null;
+    async function persistStateToDisk() {
+      const allDecisions = {};
+      document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
+        allDecisions[input.name] = input.value;
+      });
+
+      const customNotes = {};
+      document.querySelectorAll('.custom-answer-textarea').forEach(tx => {
+        const key = tx.id.replace('custom-spec-', '');
+        customNotes[key] = tx.value;
+        tx.textContent = tx.value;
+      });
+
+      const meta = document.getElementById('omp-meta-decisions');
+      if (meta) {
+        meta.setAttribute('content', JSON.stringify({
+          decisions: allDecisions,
+          custom_notes: customNotes,
+          updated_at: new Date().toISOString()
+        }));
+      }
+
+      const statusEl = document.getElementById('auto-sync-status');
+      if (statusEl) {
+        statusEl.innerText = '[STATUS: SAVING TO DISK...]';
+        statusEl.className = 'sync-status-indicator saving';
+      }
+
+      const filename = window.location.pathname.split('/').pop() || 'review.html';
+      const serializedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+      try {
+        const res = await fetch('http://127.0.0.1:8123/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: filename,
+            html: serializedHtml,
+            decisions: allDecisions,
+            custom_notes: customNotes
+          })
+        });
+        if (res.ok) {
+          if (statusEl) {
+            statusEl.innerText = '[STATUS: AUTO-SAVED TO DISK (' + new Date().toLocaleTimeString() + ')]';
+            statusEl.className = 'sync-status-indicator';
+          }
+        }
+      } catch (err) {
+        if (statusEl) {
+          statusEl.innerText = '[STATUS: LOCAL SERVER OFFLINE — SAVED TO DOM]';
+          statusEl.className = 'sync-status-indicator offline';
+        }
+      }
+    }
+
+    function handleAutoSaveOption(groupName, value, labelElement) {
+      const container = labelElement.closest('.decision-block');
+      if (container) {
+        container.querySelectorAll('.option-label').forEach(el => el.classList.remove('selected'));
+        labelElement.classList.add('selected');
+        const inputs = container.querySelectorAll('input[name="' + groupName + '"]');
+        inputs.forEach(input => {
+          if (input.value === value) {
+            input.setAttribute('checked', 'checked');
+            input.checked = true;
+          } else {
+            input.removeAttribute('checked');
+            input.checked = false;
+          }
+        });
+      }
+      persistStateToDisk();
+    }
+
+    function handleCustomAnswer(groupName, value, textareaElement) {
+      textareaElement.textContent = value;
+      clearTimeout(customDebounceTimer);
+      customDebounceTimer = setTimeout(() => {
+        persistStateToDisk();
+      }, 300);
+    }
+  </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="omp-decisions" id="omp-meta-decisions" content='{"inval_strategy":"Event-Driven Redis PubSub","updated_at":"2026-08-14T12:00:00.000Z"}'>
+  <meta name="omp-decisions" id="omp-meta-decisions" content='{"decisions":{"inval_strategy":"Event-Driven Redis PubSub"},"custom_notes":{"inval_strategy":""},"tasks":{"phase1_task1":true},"updated_at":"2026-08-14T12:00:00.000Z"}'>
   <title>Architecture Specification: Distributed Multi-Region Cache & Real-Time Sync Pipeline</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +50,6 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border-radius: 0 !important;
       -webkit-text-stroke: 0 !important;
     }
 
@@ -59,20 +58,22 @@
       color: #e5e5e5;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       line-height: 1.65;
-      padding: 44px 32px;
+      padding: 36px 24px;
       -webkit-font-smoothing: antialiased;
     }
 
     .content {
-      max-width: 1100px;
+      max-width: 1140px;
       margin: 0 auto;
     }
 
     /* Header */
     .header {
-      border-bottom: 1px solid #262626;
-      padding-bottom: 24px;
-      margin-bottom: 36px;
+      background: #121212;
+      border: 1px solid #262626;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 24px;
     }
     .header-badge {
       display: inline-block;
@@ -81,29 +82,31 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       padding: 4px 8px;
-      background: #171717;
+      background: #181818;
       border: 1px solid #333333;
+      border-radius: 4px;
       color: #d4d4d4;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       font-family: 'JetBrains Mono', monospace;
     }
     h1 {
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 800;
       color: #ffffff !important;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       letter-spacing: -0.03em;
-      line-height: 1.2;
+      line-height: 1.25;
     }
     .meta-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
       font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
       color: #8a8a8a;
-      padding-top: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #1f1f1f;
     }
     .meta-item {
       display: flex;
@@ -111,15 +114,86 @@
       gap: 6px;
     }
 
-    /* Headings */
+    /* Tabbed Navigation Bar */
+    .tab-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #141414;
+      border: 1px solid #262626;
+      border-radius: 8px;
+      padding: 6px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 14px;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #8a8a8a;
+      padding: 8px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      background: #1c1c1c;
+      color: #ffffff;
+      border-color: #333333;
+    }
+    .tab-btn.active {
+      background: #242424;
+      color: #ffffff;
+      border-color: #4a4a4a;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    .tab-btn.tab-btn-all {
+      margin-left: auto;
+      border-color: #2e2e2e;
+      background: #111111;
+    }
+    .tab-btn.tab-btn-all.active {
+      background: #262626;
+      border-color: #555555;
+    }
+
+    /* Tab Panes */
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.18s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: #121212;
+      border: 1px solid #242424;
+      border-radius: 8px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
     h2 {
       font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.01em;
       color: #ffffff;
-      margin: 44px 0 18px 0;
-      border-bottom: 1px solid #262626;
-      padding-bottom: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid #222222;
+      padding-bottom: 10px;
       display: flex;
       align-items: baseline;
       gap: 10px;
@@ -134,12 +208,12 @@
       font-size: 15px;
       font-weight: 700;
       color: #ffffff;
-      margin: 26px 0 10px 0;
+      margin: 24px 0 10px 0;
     }
 
     p {
       color: #d4d4d4;
-      font-size: 14.5px;
+      font-size: 14px;
       margin-bottom: 16px;
       line-height: 1.7;
     }
@@ -155,17 +229,53 @@
       line-height: 1.65;
     }
 
+    /* Stats Grid Widget */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: #161616;
+      border: 1px solid #262626;
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+    .stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #8a8a8a;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stat-subtext {
+      font-size: 12px;
+      color: #737373;
+      margin-top: 4px;
+    }
+
+    /* Code Blocks */
     code {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12.5px;
       background-color: #171717;
       border: 1px solid #2e2e2e;
+      border-radius: 4px;
       padding: 2px 6px;
       color: #ffffff;
     }
     pre {
-      background-color: #111111;
-      border: 1px solid #262626;
+      background-color: #101010;
+      border: 1px solid #242424;
+      border-radius: 6px;
       padding: 18px;
       overflow-x: auto;
       margin: 18px 0;
@@ -182,9 +292,10 @@
     /* Callouts - Strictly Yellow, Red, Green */
     .callout {
       padding: 16px 20px;
-      margin: 22px 0;
+      margin: 20px 0;
       font-size: 14px;
       border: 1px solid;
+      border-radius: 6px;
       line-height: 1.65;
     }
     .callout-title {
@@ -192,7 +303,7 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       margin-bottom: 8px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
     }
     .callout-warning {
@@ -224,36 +335,38 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 22px 0;
+      margin: 20px 0;
       font-size: 13.5px;
       border: 1px solid #262626;
+      border-radius: 8px;
+      overflow: hidden;
     }
     th {
-      background-color: #141414;
+      background-color: #161616;
       color: #ffffff;
       font-weight: 700;
       font-size: 11.5px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       padding: 12px 14px;
-      border-bottom: 1px solid #333333;
-      border-right: 1px solid #262626;
+      border-bottom: 1px solid #2e2e2e;
+      border-right: 1px solid #242424;
       text-align: left;
       font-family: 'JetBrains Mono', monospace;
     }
     td {
       padding: 12px 14px;
-      border-bottom: 1px solid #1f1f1f;
-      border-right: 1px solid #1f1f1f;
+      border-bottom: 1px solid #1c1c1c;
+      border-right: 1px solid #1c1c1c;
       vertical-align: top;
       line-height: 1.6;
       color: #d4d4d4;
     }
     tr:nth-child(even) {
-      background-color: #0f0f0f;
+      background-color: #0e0e0e;
     }
     tr:hover {
-      background-color: #171717;
+      background-color: #161616;
     }
 
     /* Badges */
@@ -265,6 +378,7 @@
       letter-spacing: 0.8px;
       padding: 3px 8px;
       border: 1px solid;
+      border-radius: 4px;
       font-family: 'JetBrains Mono', monospace;
     }
     .badge-pending { background: #171717; border-color: #333333; color: #a3a3a3; }
@@ -273,80 +387,249 @@
     .badge-risk { background: #2a0c0e; border-color: #991b1b; color: #f87171; }
     .badge-warn { background: #231c07; border-color: #854d0e; color: #facc15; }
 
-    /* Mermaid diagrams container */
-    .diagram-container {
+    /* Interactive Diagram Pan & Zoom Widget */
+    .diagram-wrapper {
       background-color: #111111;
       border: 1px solid #262626;
-      padding: 32px 24px;
+      border-radius: 8px;
       margin: 24px 0;
-      overflow-x: auto;
-      display: flex;
-      justify-content: center;
+      overflow: hidden;
+      position: relative;
     }
-    .mermaid {
+    .diagram-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #161616;
+      border-bottom: 1px solid #242424;
+      padding: 10px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .diagram-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .diagram-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #a3a3a3;
+      letter-spacing: 0.8px;
+    }
+    .diagram-zoom-display {
+      font-size: 11.5px;
+      color: #86efac;
+      background: #091a10;
+      border: 1px solid #144625;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .diagram-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .diagram-ctrl-btn {
+      background: #202020;
+      border: 1px solid #333333;
+      color: #d4d4d4;
+      padding: 5px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .diagram-ctrl-btn:hover {
+      background: #2b2b2b;
+      color: #ffffff;
+      border-color: #555555;
+    }
+    .diagram-viewport {
       width: 100%;
-      min-height: 280px;
+      min-height: 340px;
+      height: 480px;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
       display: flex;
       justify-content: center;
       align-items: center;
+      background: #0f0f0f;
     }
-    .mermaid svg {
-      width: 100% !important;
-      max-width: 1040px !important;
+    .diagram-viewport.grabbing {
+      cursor: grabbing;
+    }
+    .diagram-canvas {
+      transition: transform 0.05s ease-out;
+      transform-origin: center center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      user-select: none;
+    }
+    .diagram-canvas svg {
+      max-width: none !important;
       height: auto !important;
-      min-height: 260px !important;
     }
 
-    /* Option 1 Real-Time Background Auto-Save Decision Block */
+    /* Diagram Fullscreen Modal */
+    .diagram-wrapper.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 99999;
+      margin: 0;
+      border-radius: 0;
+      border: none;
+    }
+    .diagram-wrapper.fullscreen .diagram-viewport {
+      height: calc(100vh - 48px);
+    }
+
+    /* Interactive Phase Task Checklist */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #161616;
+      border: 1px solid #242424;
+      border-radius: 6px;
+      padding: 12px 16px;
+      transition: border-color 0.15s ease;
+    }
+    .task-item:hover {
+      border-color: #383838;
+    }
+    .task-item.completed {
+      background: #0c160e;
+      border-color: #184626;
+    }
+    .task-checkbox {
+      margin-top: 3px;
+      accent-color: #22c55e;
+      cursor: pointer;
+    }
+    .task-content {
+      flex: 1;
+    }
+    .task-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+    .task-desc {
+      font-size: 12.5px;
+      color: #8a8a8a;
+    }
+
+    /* Collapsible Accordions Widget */
+    .accordion-block {
+      border: 1px solid #262626;
+      border-radius: 6px;
+      margin: 16px 0;
+      overflow: hidden;
+      background: #141414;
+    }
+    .accordion-summary {
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      background: #181818;
+      border-bottom: 1px solid transparent;
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .accordion-summary:hover {
+      background: #202020;
+    }
+    .accordion-block[open] .accordion-summary {
+      border-bottom-color: #262626;
+    }
+    .accordion-body {
+      padding: 16px;
+    }
+
+    /* Option 1 Real-Time Background Auto-Save Decision Block (N Options + Custom Textarea) */
     .decision-block {
       background: #141414;
-      border: 1px solid #262626;
+      border: 1px solid #282828;
+      border-radius: 8px;
       padding: 24px;
-      margin: 28px 0;
+      margin: 24px 0;
     }
     .decision-header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
       gap: 12px;
     }
     .decision-title {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: #ffffff;
       font-family: 'JetBrains Mono', monospace;
     }
+    .decision-prompt {
+      font-size: 13.5px;
+      color: #a3a3a3;
+      margin-bottom: 16px;
+    }
     .options-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 18px;
     }
     .option-label {
       display: flex;
       align-items: flex-start;
       gap: 14px;
-      padding: 16px 18px;
-      background: #0c0c0c;
-      border: 1px solid #262626;
+      padding: 15px 18px;
+      background: #0d0d0d;
+      border: 1px solid #242424;
+      border-radius: 6px;
       cursor: pointer;
-      transition: border-color 0.15s ease;
+      transition: all 0.15s ease;
     }
     .option-label:hover {
       border-color: #404040;
-      background: #171717;
+      background: #161616;
     }
     .option-label.selected {
-      border-color: #525252;
-      background: #171717;
+      border-color: #555555;
+      background: #1a1a1a;
+      box-shadow: 0 0 0 1px #555555;
     }
     .option-label input {
       margin-top: 4px;
       accent-color: #ffffff;
+      cursor: pointer;
     }
     .option-content {
       flex: 1;
@@ -356,11 +639,61 @@
       font-size: 14px;
       color: #ffffff;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .option-desc {
       font-size: 13px;
       color: #a3a3a3;
       line-height: 1.55;
+    }
+
+    /* Custom Answer Textarea Area */
+    .custom-answer-block {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #222222;
+    }
+    .custom-answer-label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    .custom-answer-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #ffffff;
+    }
+    .custom-answer-hint {
+      font-size: 12px;
+      color: #737373;
+    }
+    .custom-answer-textarea {
+      width: 100%;
+      min-height: 76px;
+      background: #0a0a0a;
+      border: 1px solid #282828;
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      resize: vertical;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .custom-answer-textarea:focus {
+      border-color: #555555;
+      background: #0d0d0d;
+      box-shadow: 0 0 0 1px #555555;
     }
 
     .auto-save-bar {
@@ -370,7 +703,8 @@
       gap: 14px;
       flex-wrap: wrap;
       padding-top: 14px;
-      border-top: 1px solid #262626;
+      border-top: 1px solid #242424;
+      margin-top: 18px;
     }
     .sync-status-indicator {
       font-family: 'JetBrains Mono', monospace;
@@ -383,10 +717,16 @@
     .sync-status-indicator.offline {
       color: #8a8a8a;
     }
+    .sync-port-indicator {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #737373;
+    }
   </style>
 </head>
 <body>
   <div class="content">
+    <!-- Header -->
     <header class="header">
       <span class="header-badge">[PLAN] ARCHITECTURE SPECIFICATION</span>
       <h1>Distributed Multi-Region Cache & Real-Time Sync Pipeline</h1>
@@ -398,54 +738,115 @@
       </div>
     </header>
 
-    <section>
-      <h2><span class="section-num">01.</span> Architecture Context & Problem Statement</h2>
-      <p>Under peak load (12,000 active concurrent WebSocket connections), the core application cluster generates excessive read pressure on the PostgreSQL primary instance (averaging 8,400 queries/sec). Over 78% of these queries are repetitive reads of user session metadata, active permissions, and live document state trees.</p>
-      <p>This implementation plan introduces a distributed Redis Cluster caching tier with probabilistic early expiration (XFetch algorithm) and an event-driven invalidation bus. This architecture reduces primary database read load by approximately 85% while guaranteeing sub-5ms median read latency and multi-node real-time synchronization.</p>
-    </section>
+    <!-- Tabbed Navigation Bar -->
+    <nav class="tab-nav" id="mainTabNav">
+      <button type="button" class="tab-btn active" onclick="switchTab('tab-overview', this)">[01. Overview]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-topology', this)">[02. Topology & Diagram]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-specs', this)">[03. Technical Specs]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-phases', this)">[04. Execution Phases]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-decisions', this)">[05. Decisions & Options]</button>
+      <button type="button" class="tab-btn" onclick="switchTab('tab-verification', this)">[06. Risks & Verification]</button>
+      <button type="button" class="tab-btn tab-btn-all" onclick="switchTab('all', this)">[View All Sections]</button>
+    </nav>
 
-    <section>
-      <h2><span class="section-num">02.</span> System Topology & Component Interactions</h2>
-      <div class="diagram-container">
-        <div class="mermaid">
-          flowchart TB
-            subgraph INGRESS["Ingress & Edge Routing"]
-              Client["Client Applications (Web / iOS / Android)"]
-              Gateway["API Gateway / Envoy (TLS v1.3 • Rate Limiter)"]
-            end
+    <!-- Tab 01: Overview -->
+    <div class="tab-pane active" id="tab-overview">
+      <section class="section-card">
+        <h2><span class="section-num">01.</span> Architecture Context & Problem Statement</h2>
+        <p>Under peak load (12,000 active concurrent WebSocket connections), the core application cluster generates excessive read pressure on the PostgreSQL primary instance (averaging 8,400 queries/sec). Over 78% of these queries are repetitive reads of user session metadata, active permissions, and live document state trees.</p>
+        <p>This implementation plan introduces a distributed Redis Cluster caching tier with probabilistic early expiration (XFetch algorithm) and an event-driven invalidation bus. This architecture reduces primary database read load by approximately 85% while guaranteeing sub-5ms median read latency and multi-node real-time synchronization.</p>
 
-            subgraph COMPUTE["Stateless Compute Engine"]
-              CoreWorkers["App Core Workers (Bun / Fastify Cluster)"]
-              L1LRU["L1 In-Memory LRU Cache (1K Hot Keys • 10s TTL)"]
-            end
-
-            subgraph CACHE["Distributed Cache & Sync Bus"]
-              RedisPrimary[("Redis Cluster Primary (L2 Caching Tier)")]
-              PubSubBus{{"Redis Pub/Sub Bus (Inter-Worker Eviction)"}}
-            end
-
-            subgraph STORAGE["Persistent Storage Layer"]
-              PostgresPrimary[("PostgreSQL 16 Primary (Transactional Truth)")]
-              ReadReplica[("Read Replica (Analytics & Fallback Reads)")]
-            end
-
-            Client -->|HTTPS / WSS| Gateway
-            Gateway -->|HTTP/2 Internal Proxy| CoreWorkers
-            CoreWorkers <-->|Sub-millisecond Lookup| L1LRU
-            CoreWorkers -->|Cache-Aside with XFetch| RedisPrimary
-            CoreWorkers -->|Transactional Commits| PostgresPrimary
-            CoreWorkers -.->|Publish Eviction Notice| PubSubBus
-            PubSubBus -.->|Broadcast Invalidate| L1LRU
-            PostgresPrimary -.->|Async WAL Streaming| ReadReplica
+        <!-- KPI Stats Grid Widget -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Target Read Latency</div>
+            <div class="stat-value">&lt; 5.0 ms</div>
+            <div class="stat-subtext">p99 under 12K active connections</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">DB Load Reduction</div>
+            <div class="stat-value">-85.4%</div>
+            <div class="stat-subtext">Primary Postgres read IOPS</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Memory Budget</div>
+            <div class="stat-value">4.0 GB</div>
+            <div class="stat-subtext">allkeys-lru with LZ4 compression</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Sync Invalidation</div>
+            <div class="stat-value">&lt; 1.2 ms</div>
+            <div class="stat-subtext">Inter-worker broadcast eviction</div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
-    <section>
-      <h2><span class="section-num">03.</span> Technical Specifications & Interface Contracts</h2>
-      <p>The cache client provides a two-tier caching interface: an in-process L1 LRU cache (1,000 hot keys, 10-second TTL) combined with an L2 distributed Redis cluster tier. Keys are hashed using CRC16 with namespace isolation prefixing.</p>
+    <!-- Tab 02: Topology & Interactive Pan/Zoom Diagram -->
+    <div class="tab-pane" id="tab-topology">
+      <section class="section-card">
+        <h2><span class="section-num">02.</span> System Topology & Component Interactions</h2>
+        <p>The diagram below details edge ingress routing, stateless compute nodes, distributed Redis cluster tiers, and the asynchronous event bus. Use the toolbar or mouse wheel to zoom and drag to pan.</p>
 
-      <pre><code>// Cache Service Contract Definition
+        <!-- Interactive Diagram Widget -->
+        <div class="diagram-wrapper" id="diagram-topology">
+          <div class="diagram-toolbar">
+            <div class="diagram-info">
+              <span class="diagram-badge">[DIAGRAM: SYSTEM ARCHITECTURE]</span>
+              <span class="diagram-zoom-display" id="zoom-display-diagram-topology">100%</span>
+            </div>
+            <div class="diagram-actions">
+              <button type="button" class="diagram-ctrl-btn" onclick="zoomDiagram('diagram-topology', 0.2)" title="Zoom In">[ + ]</button>
+              <button type="button" class="diagram-ctrl-btn" onclick="zoomDiagram('diagram-topology', -0.2)" title="Zoom Out">[ - ]</button>
+              <button type="button" class="diagram-ctrl-btn" onclick="resetDiagramZoom('diagram-topology')" title="Reset Zoom">[ RESET ]</button>
+              <button type="button" class="diagram-ctrl-btn" onclick="fitDiagram('diagram-topology')" title="Fit to View">[ FIT ]</button>
+              <button type="button" class="diagram-ctrl-btn" onclick="toggleDiagramFullscreen('diagram-topology')" title="Fullscreen Toggle">[ EXPAND ]</button>
+            </div>
+          </div>
+          <div class="diagram-viewport" id="viewport-diagram-topology">
+            <div class="mermaid diagram-canvas" id="canvas-diagram-topology">
+              flowchart TB
+                subgraph INGRESS["Ingress & Edge Routing"]
+                  Client["Client Applications (Web / iOS / Android)"]
+                  Gateway["API Gateway / Envoy (TLS v1.3 • Rate Limiter)"]
+                end
+
+                subgraph COMPUTE["Stateless Compute Engine"]
+                  CoreWorkers["App Core Workers (Bun / Fastify Cluster)"]
+                  L1LRU["L1 In-Memory LRU Cache (1K Hot Keys • 10s TTL)"]
+                end
+
+                subgraph CACHE["Distributed Cache & Sync Bus"]
+                  RedisPrimary[("Redis Cluster Primary (L2 Caching Tier)")]
+                  PubSubBus{{"Redis Pub/Sub Bus (Inter-Worker Eviction)"}}
+                end
+
+                subgraph STORAGE["Persistent Storage Layer"]
+                  PostgresPrimary[("PostgreSQL 16 Primary (Transactional Truth)")]
+                  ReadReplica[("Read Replica (Analytics & Fallback Reads)")]
+                end
+
+                Client -->|HTTPS / WSS| Gateway
+                Gateway -->|HTTP/2 Internal Proxy| CoreWorkers
+                CoreWorkers <-->|Sub-millisecond Lookup| L1LRU
+                CoreWorkers -->|Cache-Aside with XFetch| RedisPrimary
+                CoreWorkers -->|Transactional Commits| PostgresPrimary
+                CoreWorkers -.->|Publish Eviction Notice| PubSubBus
+                PubSubBus -.->|Broadcast Invalidate| L1LRU
+                PostgresPrimary -.->|Async WAL Streaming| ReadReplica
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tab 03: Technical Specs -->
+    <div class="tab-pane" id="tab-specs">
+      <section class="section-card">
+        <h2><span class="section-num">03.</span> Technical Specifications & Interface Contracts</h2>
+        <p>The cache client provides a two-tier caching interface: an in-process L1 LRU cache (1,000 hot keys, 10-second TTL) combined with an L2 distributed Redis cluster tier. Keys are hashed using CRC16 with namespace isolation prefixing.</p>
+
+        <pre><code>// Cache Service Contract Definition
 export interface CacheEntry&lt;T&gt; {
   data: T;
   version: number;
@@ -465,147 +866,387 @@ export interface ICacheService {
   invalidateByTag(tag: string): Promise&lt;number&gt;;
   publishSyncEvent(event: CacheSyncEvent): Promise&lt;void&gt;;
 }</code></pre>
-    </section>
 
-    <section>
-      <h2><span class="section-num">04.</span> Execution Phases & Detailed File Matrix</h2>
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 80px;">Phase</th>
-            <th>Scope & Detailed Implementation Steps</th>
-            <th style="width: 300px;">Touched Files & Modules</th>
-            <th style="width: 140px;">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>01</strong></td>
-            <td>
-              <strong>Infrastructure Connection Pool & Sentinel Healthcheck</strong><br>
-              Implement connection pooling with TLS v1.3 verification, automatic reconnection exponential backoff, circuit-breaking, and cluster node discovery.
-            </td>
-            <td>
-              <code>src/infra/redis/client.ts</code><br>
-              <code>src/infra/redis/pool.ts</code><br>
-              <code>src/config/redis.config.ts</code>
-            </td>
-            <td><span class="badge badge-done">COMPLETED</span></td>
-          </tr>
-          <tr>
-            <td><strong>02</strong></td>
-            <td>
-              <strong>Two-Tier Cache Manager & Probabilistic Expiration</strong><br>
-              Build the two-tier caching engine (in-memory LRU + Redis L2). Integrate the XFetch probabilistic refresh algorithm to completely eliminate cache stampedes on hot keys.
-            </td>
-            <td>
-              <code>src/services/cache/cache-manager.ts</code><br>
-              <code>src/services/cache/xfetch.ts</code><br>
-              <code>src/middleware/session-cache.ts</code>
-            </td>
-            <td><span class="badge badge-progress">IN PROGRESS</span></td>
-          </tr>
-          <tr>
-            <td><strong>03</strong></td>
-            <td>
-              <strong>Pub/Sub Inter-Node Invalidation Bus</strong><br>
-              Wire Redis Pub/Sub channels to broadcast tag-based and key-based invalidations across all worker instances. When a record is mutated, broadcast eviction to prune L1 memory caches.
-            </td>
-            <td>
-              <code>src/services/cache/sync-bus.ts</code><br>
-              <code>src/services/document/document.service.ts</code><br>
-              <code>src/ws/subscription-manager.ts</code>
-            </td>
-            <td><span class="badge badge-pending">PENDING</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+        <!-- Collapsible Accordion Widget for Deep Schemas -->
+        <details class="accordion-block">
+          <summary class="accordion-summary">
+            <span>[SCHEMA CONTRACT] Redis Invalidation Protocol Payload Specification</span>
+            <span style="color: #737373; font-size: 11px;">CLICK TO EXPAND</span>
+          </summary>
+          <div class="accordion-body">
+            <pre><code>export interface CacheSyncEvent {
+  eventId: string;
+  sourceNodeId: string;
+  timestamp: number;
+  action: 'PURGE_KEY' | 'PURGE_TAG' | 'BULK_INVALIDATE';
+  keys?: string[];
+  tags?: string[];
+  ttlOverride?: number;
+}</code></pre>
+          </div>
+        </details>
+      </section>
+    </div>
 
-    <section>
-      <h2><span class="section-num">05.</span> In-Depth Risk Assessment & Mitigation</h2>
-      <div class="callout callout-warning">
-        <div class="callout-title">[WARNING] Cache Stampede on Hot Document Re-calculation</div>
-        When a highly contested document key expires, hundreds of incoming requests simultaneously querying the database can exhaust the PostgreSQL connection pool. Mitigated by applying the XFetch probabilistic early calculation algorithm and acquiring a distributed atomic lock (via <code>SETNX</code> with a 3-second lease) during computation.
-      </div>
-      <div class="callout callout-error">
-        <div class="callout-title">[ERROR] Critical Security Requirement: TLS Enforced & Authentication Guard</div>
-        Production clusters require TLS v1.3 with SNI verification and strong ACL credentials. The Redis client must immediately fail-fast and reject booting if unencrypted plaintext TCP connections or empty password configurations are detected in production environments.
-      </div>
-      <div class="callout callout-note">
-        <div class="callout-title">[INFO] Memory Bounding Policy</div>
-        Redis instance maximum memory configured to <code>4GB</code> with an <code>allkeys-lru</code> eviction policy. Large payloads (&gt; 512 KB) are automatically compressed using LZ4 before cache storage.
-      </div>
-    </section>
+    <!-- Tab 04: Execution Phases & Interactive Task Checklist -->
+    <div class="tab-pane" id="tab-phases">
+      <section class="section-card">
+        <h2><span class="section-num">04.</span> Execution Phases & Interactive Task Checklist</h2>
+        <p>Track phase execution and mark deliverables completed in real time. Changes automatically sync to disk.</p>
 
-    <section>
-      <h2><span class="section-num">06.</span> Architectural Decisions (Real-Time Auto-Save)</h2>
-      <div class="decision-block">
-        <div class="decision-header-row">
-          <div class="decision-title">[DECISION] Select Invalidation Protocol Strategy:</div>
-        </div>
-        <div class="options-grid">
-          <label class="option-label selected" onclick="handleAutoSaveOption('inval_strategy', 'Event-Driven Redis PubSub', this)">
-            <input type="radio" name="inval_strategy" value="Event-Driven Redis PubSub" checked="checked">
-            <div class="option-content">
-              <div class="option-name">Option A: Event-Driven Redis PubSub (Recommended)</div>
-              <div class="option-desc">Sub-millisecond invalidation broadcasts across all cluster worker instances. Ensures instantaneous consistency across multi-node deployments with minimal overhead.</div>
+        <!-- Interactive Phase Checklist Widget -->
+        <div class="task-list">
+          <div class="task-item completed" id="task-phase1_task1">
+            <input type="checkbox" id="chk-phase1_task1" class="task-checkbox" checked="checked" onchange="handleTaskToggle('phase1_task1', this)">
+            <div class="task-content">
+              <div class="task-title">Phase 01: Infrastructure Connection Pool & Sentinel Healthcheck</div>
+              <div class="task-desc">Connection pooling with TLS v1.3 verification, exponential backoff, and cluster node discovery. (<code>src/infra/redis/client.ts</code>)</div>
             </div>
-          </label>
-          <label class="option-label" onclick="handleAutoSaveOption('inval_strategy', 'TTL Leases with Stale-While-Revalidate', this)">
-            <input type="radio" name="inval_strategy" value="TTL Leases with Stale-While-Revalidate">
-            <div class="option-content">
-              <div class="option-name">Option B: TTL Leases with Stale-While-Revalidate</div>
-              <div class="option-desc">Simpler architecture without inter-node pub/sub messaging. Tolerates a small window (1-3 seconds) of eventual consistency; lower network coupling between worker instances.</div>
+            <span class="badge badge-done" id="badge-phase1_task1">COMPLETED</span>
+          </div>
+
+          <div class="task-item" id="task-phase2_task1">
+            <input type="checkbox" id="chk-phase2_task1" class="task-checkbox" onchange="handleTaskToggle('phase2_task1', this)">
+            <div class="task-content">
+              <div class="task-title">Phase 02: Two-Tier Cache Manager & Probabilistic Expiration</div>
+              <div class="task-desc">Build in-memory LRU + Redis L2 engine with XFetch probabilistic refresh algorithm. (<code>src/services/cache/cache-manager.ts</code>)</div>
             </div>
-          </label>
+            <span class="badge badge-progress" id="badge-phase2_task1">IN PROGRESS</span>
+          </div>
+
+          <div class="task-item" id="task-phase3_task1">
+            <input type="checkbox" id="chk-phase3_task1" class="task-checkbox" onchange="handleTaskToggle('phase3_task1', this)">
+            <div class="task-content">
+              <div class="task-title">Phase 03: Pub/Sub Inter-Node Invalidation Bus</div>
+              <div class="task-desc">Wire Redis Pub/Sub channels to broadcast tag-based evictions to prune L1 memory caches. (<code>src/services/cache/sync-bus.ts</code>)</div>
+            </div>
+            <span class="badge badge-pending" id="badge-phase3_task1">PENDING</span>
+          </div>
         </div>
 
-        <div class="auto-save-bar">
-          <span id="auto-sync-status" class="sync-status-indicator">[STATUS: REAL-TIME AUTO-SAVE ACTIVE]</span>
-          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #737373;">Local Port: 8123</span>
-        </div>
-      </div>
-    </section>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 80px;">Phase</th>
+              <th>Detailed Implementation Scope</th>
+              <th style="width: 300px;">Target Modules</th>
+              <th style="width: 140px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>01</strong></td>
+              <td>TLS v1.3 cluster connection pooling, auto-reconnect, and health probes.</td>
+              <td><code>src/infra/redis/client.ts</code><br><code>src/infra/redis/pool.ts</code></td>
+              <td><span class="badge badge-done">COMPLETED</span></td>
+            </tr>
+            <tr>
+              <td><strong>02</strong></td>
+              <td>L1 LRU + L2 Redis tiering with XFetch stampede mitigation.</td>
+              <td><code>src/services/cache/cache-manager.ts</code><br><code>src/services/cache/xfetch.ts</code></td>
+              <td><span class="badge badge-progress">IN PROGRESS</span></td>
+            </tr>
+            <tr>
+              <td><strong>03</strong></td>
+              <td>Redis Pub/Sub cross-worker invalidation broadcast.</td>
+              <td><code>src/services/cache/sync-bus.ts</code><br><code>src/ws/subscription-manager.ts</code></td>
+              <td><span class="badge badge-pending">PENDING</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
 
-    <section>
-      <h2><span class="section-num">07.</span> Verification Matrix & Rollback Strategy</h2>
-      <ul>
-        <li><strong>Unit Tests (100% Branch Coverage)</strong>: Verify XFetch boundary math, key serialization, error handling when Redis nodes drop, and cache-aside fallbacks in <code>src/services/cache/cache-manager.test.ts</code>.</li>
-        <li><strong>Concurrency & Stampede Simulation</strong>: Execute <code>k6</code> load test with 2,000 simulated parallel requests against a cold key.</li>
-        <li><strong>Chaos & Partition Testing</strong>: Simulate Redis cluster network partition via <code>iptables</code> drop.</li>
-      </ul>
-    </section>
+    <!-- Tab 05: Decisions & Real-Time Auto-Save (N Options + Custom Textarea) -->
+    <div class="tab-pane" id="tab-decisions">
+      <section class="section-card">
+        <h2><span class="section-num">05.</span> Architectural Decisions & Custom Overrides</h2>
+        <p>Select your architectural decision from the available options (more than 2 supported) or specify custom requirements in the dedicated text area. Changes auto-save directly to disk in real time.</p>
+
+        <div class="decision-block" id="decision-inval-strategy">
+          <div class="decision-header-row">
+            <div class="decision-title">[DECISION] Select Invalidation Protocol Strategy:</div>
+            <span class="badge badge-risk">3 OPTIONS AVAILABLE</span>
+          </div>
+          <p class="decision-prompt">Select the distributed invalidation architecture for multi-region cache synchronization:</p>
+
+          <div class="options-grid">
+            <!-- Option A -->
+            <label class="option-label selected" onclick="handleAutoSaveOption('inval_strategy', 'Event-Driven Redis PubSub', this)">
+              <input type="radio" name="inval_strategy" value="Event-Driven Redis PubSub" checked="checked">
+              <div class="option-content">
+                <div class="option-name">
+                  <span>Option A: Event-Driven Redis PubSub</span>
+                  <span class="badge badge-done">RECOMMENDED</span>
+                </div>
+                <div class="option-desc">Sub-millisecond invalidation broadcasts across all cluster worker instances. Ensures instantaneous consistency across multi-node deployments with minimal overhead.</div>
+              </div>
+            </label>
+
+            <!-- Option B -->
+            <label class="option-label" onclick="handleAutoSaveOption('inval_strategy', 'TTL Leases with Stale-While-Revalidate', this)">
+              <input type="radio" name="inval_strategy" value="TTL Leases with Stale-While-Revalidate">
+              <div class="option-content">
+                <div class="option-name">Option B: TTL Leases with Stale-While-Revalidate</div>
+                <div class="option-desc">Simpler architecture without inter-node pub/sub messaging. Tolerates a small window (1-3 seconds) of eventual consistency; lower network coupling between worker instances.</div>
+              </div>
+            </label>
+
+            <!-- Option C -->
+            <label class="option-label" onclick="handleAutoSaveOption('inval_strategy', 'Hybrid Change-Data-Capture (Debezium + Kafka)', this)">
+              <input type="radio" name="inval_strategy" value="Hybrid Change-Data-Capture (Debezium + Kafka)">
+              <div class="option-content">
+                <div class="option-name">Option C: Hybrid Change-Data-Capture (Debezium + Kafka)</div>
+                <div class="option-desc">Database WAL stream tailing via Debezium Kafka connector for enterprise-scale zero-drop cache invalidations independent of application layer writes.</div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Custom Answer Textarea -->
+          <div class="custom-answer-block">
+            <label class="custom-answer-label" for="custom-spec-inval_strategy">
+              <span class="custom-answer-title">[CUSTOM ARCHITECTURAL OVERRIDE / SPECIFICATION NOTES]</span>
+              <span class="custom-answer-hint">Type custom requirements, modifications, or specific architectural constraints below:</span>
+            </label>
+            <textarea
+              id="custom-spec-inval_strategy"
+              class="custom-answer-textarea"
+              placeholder="e.g., Use Redis PubSub for primary cluster, but enable 10s TTL fallback for cross-region edge nodes..."
+              oninput="handleCustomAnswer('inval_strategy', this.value, this)"
+            ></textarea>
+          </div>
+
+          <div class="auto-save-bar">
+            <span id="auto-sync-status" class="sync-status-indicator">[STATUS: REAL-TIME AUTO-SAVE ACTIVE]</span>
+            <span class="sync-port-indicator">Local Port: 8123</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tab 06: Risks & Verification -->
+    <div class="tab-pane" id="tab-verification">
+      <section class="section-card">
+        <h2><span class="section-num">06.</span> In-Depth Risk Assessment & Mitigation</h2>
+        <div class="callout callout-warning">
+          <div class="callout-title">[WARNING] Cache Stampede on Hot Document Re-calculation</div>
+          When a highly contested document key expires, hundreds of incoming requests simultaneously querying the database can exhaust the PostgreSQL connection pool. Mitigated by applying the XFetch probabilistic early calculation algorithm and acquiring a distributed atomic lock (via <code>SETNX</code> with a 3-second lease) during computation.
+        </div>
+        <div class="callout callout-error">
+          <div class="callout-title">[ERROR] Critical Security Requirement: TLS Enforced & Authentication Guard</div>
+          Production clusters require TLS v1.3 with SNI verification and strong ACL credentials. The Redis client must immediately fail-fast and reject booting if unencrypted plaintext TCP connections or empty password configurations are detected in production environments.
+        </div>
+        <div class="callout callout-note">
+          <div class="callout-title">[INFO] Memory Bounding Policy</div>
+          Redis instance maximum memory configured to <code>4GB</code> with an <code>allkeys-lru</code> eviction policy. Large payloads (&gt; 512 KB) are automatically compressed using LZ4 before cache storage.
+        </div>
+
+        <h3>Verification Matrix & Rollback Strategy</h3>
+        <ul>
+          <li><strong>Unit Tests (100% Branch Coverage)</strong>: Verify XFetch boundary math, key serialization, error handling when Redis nodes drop, and cache-aside fallbacks in <code>src/services/cache/cache-manager.test.ts</code>.</li>
+          <li><strong>Concurrency & Stampede Simulation</strong>: Execute <code>k6</code> load test with 2,000 simulated parallel requests against a cold key.</li>
+          <li><strong>Chaos & Partition Testing</strong>: Simulate Redis cluster network partition via <code>iptables</code> drop.</li>
+        </ul>
+      </section>
+    </div>
   </div>
 
   <script>
-    async function handleAutoSaveOption(groupName, value, labelElement) {
-      // 1. Update visual styles
-      const container = labelElement.closest('.decision-block');
-      container.querySelectorAll('.option-label').forEach(el => el.classList.remove('selected'));
-      labelElement.classList.add('selected');
+    // -------------------------------------------------------------
+    // 1. Tab Navigation System
+    // -------------------------------------------------------------
+    function switchTab(tabId, btnElement) {
+      const nav = btnElement.closest('.tab-nav');
+      if (nav) {
+        nav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      }
+      btnElement.classList.add('active');
 
-      // 2. Mutate DOM checked attributes
-      const inputs = container.querySelectorAll('input[name="' + groupName + '"]');
-      inputs.forEach(input => {
-        if (input.value === value) {
-          input.setAttribute('checked', 'checked');
-          input.checked = true;
+      const panes = document.querySelectorAll('.tab-pane');
+      if (tabId === 'all') {
+        panes.forEach(p => {
+          p.classList.add('active');
+          p.style.display = 'block';
+        });
+        window.location.hash = 'all';
+        return;
+      }
+
+      panes.forEach(p => {
+        if (p.id === tabId) {
+          p.classList.add('active');
+          p.style.display = 'block';
         } else {
-          input.removeAttribute('checked');
-          input.checked = false;
+          p.classList.remove('active');
+          p.style.display = 'none';
         }
       });
 
-      // 3. Serialize all decisions
+      window.location.hash = tabId;
+    }
+
+    // Support Hash Deep Linking
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const targetBtn = document.querySelector(`.tab-btn[onclick*="${hash}"]`);
+        if (targetBtn) {
+          targetBtn.click();
+        }
+      }
+    });
+
+    // -------------------------------------------------------------
+    // 2. Interactive Diagram Pan & Zoom Engine
+    // -------------------------------------------------------------
+    const diagramStates = {};
+
+    function initDiagramState(id) {
+      if (!diagramStates[id]) {
+        diagramStates[id] = {
+          scale: 1.0,
+          translateX: 0,
+          translateY: 0,
+          isPanning: false,
+          startX: 0,
+          startY: 0
+        };
+      }
+      return diagramStates[id];
+    }
+
+    function updateDiagramTransform(id) {
+      const state = diagramStates[id];
+      const canvas = document.getElementById('canvas-' + id);
+      const display = document.getElementById('zoom-display-' + id);
+      if (canvas) {
+        canvas.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`;
+      }
+      if (display) {
+        display.textContent = `${Math.round(state.scale * 100)}%`;
+      }
+    }
+
+    function zoomDiagram(id, delta) {
+      const state = initDiagramState(id);
+      state.scale = Math.min(Math.max(state.scale + delta, 0.25), 4.0);
+      updateDiagramTransform(id);
+    }
+
+    function resetDiagramZoom(id) {
+      const state = initDiagramState(id);
+      state.scale = 1.0;
+      state.translateX = 0;
+      state.translateY = 0;
+      updateDiagramTransform(id);
+    }
+
+    function fitDiagram(id) {
+      const state = initDiagramState(id);
+      const viewport = document.getElementById('viewport-' + id);
+      const canvas = document.getElementById('canvas-' + id);
+      if (!viewport || !canvas) return;
+      const svg = canvas.querySelector('svg');
+      if (!svg) return;
+
+      const vRect = viewport.getBoundingClientRect();
+      const sRect = svg.getBoundingClientRect();
+      const rawWidth = sRect.width / state.scale;
+      const rawHeight = sRect.height / state.scale;
+
+      const fitScale = Math.min((vRect.width - 48) / rawWidth, (vRect.height - 48) / rawHeight, 1.4);
+      state.scale = Math.max(fitScale, 0.35);
+      state.translateX = 0;
+      state.translateY = 0;
+      updateDiagramTransform(id);
+    }
+
+    function toggleDiagramFullscreen(id) {
+      const wrapper = document.getElementById(id);
+      if (!wrapper) return;
+      wrapper.classList.toggle('fullscreen');
+      const isFs = wrapper.classList.contains('fullscreen');
+      document.body.style.overflow = isFs ? 'hidden' : '';
+      resetDiagramZoom(id);
+    }
+
+    function setupDiagramInteractions(id) {
+      const viewport = document.getElementById('viewport-' + id);
+      if (!viewport) return;
+      const state = initDiagramState(id);
+
+      viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.15 : -0.15;
+        state.scale = Math.min(Math.max(state.scale + delta, 0.25), 4.0);
+        updateDiagramTransform(id);
+      }, { passive: false });
+
+      viewport.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.diagram-toolbar')) return;
+        state.isPanning = true;
+        state.startX = e.clientX - state.translateX;
+        state.startY = e.clientY - state.translateY;
+        viewport.classList.add('grabbing');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!state.isPanning) return;
+        state.translateX = e.clientX - state.startX;
+        state.translateY = e.clientY - state.startY;
+        updateDiagramTransform(id);
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (state.isPanning) {
+          state.isPanning = false;
+          viewport.classList.remove('grabbing');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.diagram-wrapper').forEach(wrap => {
+        setupDiagramInteractions(wrap.id);
+      });
+    });
+
+    // -------------------------------------------------------------
+    // 3. Real-Time Auto-Save Engine (Decisions + Custom Textarea + Tasks)
+    // -------------------------------------------------------------
+    let customDebounceTimer = null;
+
+    async function persistStateToDisk() {
+      // 1. Serialize decisions
       const allDecisions = {};
-      document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
+      document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:not(.task-checkbox):checked').forEach(input => {
         allDecisions[input.name] = input.value;
       });
 
+      // 2. Serialize custom notes
+      const customNotes = {};
+      document.querySelectorAll('.custom-answer-textarea').forEach(tx => {
+        const key = tx.id.replace('custom-spec-', '');
+        customNotes[key] = tx.value;
+        tx.textContent = tx.value; // sync inner text in DOM
+      });
+
+      // 3. Serialize task progress
+      const taskProgress = {};
+      document.querySelectorAll('.task-checkbox').forEach(chk => {
+        const taskId = chk.id.replace('chk-', '');
+        taskProgress[taskId] = chk.checked;
+      });
+
+      // 4. Update Meta tag
       const meta = document.getElementById('omp-meta-decisions');
       if (meta) {
-        meta.setAttribute('content', JSON.stringify({ decisions: allDecisions, updated_at: new Date().toISOString() }));
+        meta.setAttribute('content', JSON.stringify({
+          decisions: allDecisions,
+          custom_notes: customNotes,
+          tasks: taskProgress,
+          updated_at: new Date().toISOString()
+        }));
       }
 
       const statusEl = document.getElementById('auto-sync-status');
@@ -614,8 +1255,8 @@ export interface ICacheService {
         statusEl.className = 'sync-status-indicator saving';
       }
 
-      // 4. Send background POST to local OMP server
-      const filename = window.location.pathname.split('/').pop() || 'test-plan.html';
+      // 5. Send POST to local server
+      const filename = window.location.pathname.split('/').pop() || 'plan.html';
       const serializedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
 
       try {
@@ -625,7 +1266,9 @@ export interface ICacheService {
           body: JSON.stringify({
             filename: filename,
             html: serializedHtml,
-            decisions: allDecisions
+            decisions: allDecisions,
+            custom_notes: customNotes,
+            tasks: taskProgress
           })
         });
 
@@ -640,10 +1283,59 @@ export interface ICacheService {
       } catch (err) {
         console.warn('Local background server sync notice:', err);
         if (statusEl) {
-          statusEl.innerText = '[STATUS: LOCAL SERVER OFFLINE — SAVED TO DOM & LOCALSTORAGE]';
+          statusEl.innerText = '[STATUS: LOCAL SERVER OFFLINE — SAVED TO DOM]';
           statusEl.className = 'sync-status-indicator offline';
         }
       }
+    }
+
+    function handleAutoSaveOption(groupName, value, labelElement) {
+      const container = labelElement.closest('.decision-block');
+      if (container) {
+        container.querySelectorAll('.option-label').forEach(el => el.classList.remove('selected'));
+        labelElement.classList.add('selected');
+
+        const inputs = container.querySelectorAll('input[name="' + groupName + '"]');
+        inputs.forEach(input => {
+          if (input.value === value) {
+            input.setAttribute('checked', 'checked');
+            input.checked = true;
+          } else {
+            input.removeAttribute('checked');
+            input.checked = false;
+          }
+        });
+      }
+      persistStateToDisk();
+    }
+
+    function handleCustomAnswer(groupName, value, textareaElement) {
+      textareaElement.textContent = value;
+      clearTimeout(customDebounceTimer);
+      customDebounceTimer = setTimeout(() => {
+        persistStateToDisk();
+      }, 300);
+    }
+
+    function handleTaskToggle(taskId, checkboxElement) {
+      const taskItem = document.getElementById('task-' + taskId);
+      const badge = document.getElementById('badge-' + taskId);
+      if (checkboxElement.checked) {
+        checkboxElement.setAttribute('checked', 'checked');
+        if (taskItem) taskItem.classList.add('completed');
+        if (badge) {
+          badge.className = 'badge badge-done';
+          badge.innerText = 'COMPLETED';
+        }
+      } else {
+        checkboxElement.removeAttribute('checked');
+        if (taskItem) taskItem.classList.remove('completed');
+        if (badge) {
+          badge.className = 'badge badge-progress';
+          badge.innerText = 'IN PROGRESS';
+        }
+      }
+      persistStateToDisk();
     }
   </script>
 </body>
