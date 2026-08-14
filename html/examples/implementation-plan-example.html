@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="omp-decisions" id="omp-meta-decisions" content='{"inval_strategy":"Event-Driven Redis PubSub","saved_at":"2026-08-14T12:00:00.000Z"}'>
+  <meta name="omp-decisions" id="omp-meta-decisions" content='{"inval_strategy":"Event-Driven Redis PubSub","updated_at":"2026-08-14T12:00:00.000Z"}'>
   <title>Architecture Specification: Distributed Multi-Region Cache & Real-Time Sync Pipeline</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -297,7 +297,7 @@
       min-height: 260px !important;
     }
 
-    /* Self-Saving Decision Block */
+    /* Option 2 Direct File System Access Decision Block */
     .decision-block {
       background: #141414;
       border: 1px solid #262626;
@@ -310,7 +310,7 @@
       align-items: center;
       margin-bottom: 16px;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
     .decision-title {
       font-size: 13px;
@@ -363,18 +363,19 @@
       line-height: 1.55;
     }
 
-    .save-actions-row {
+    .direct-file-toolbar {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
-      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #262626;
     }
-    .save-file-button {
+    .action-btn {
       background-color: #262626;
       color: #ffffff;
       border: 1px solid #404040;
-      padding: 11px 22px;
+      padding: 10px 18px;
       font-size: 11.5px;
       font-weight: 700;
       text-transform: uppercase;
@@ -383,17 +384,21 @@
       font-family: 'JetBrains Mono', monospace;
       transition: background 0.15s ease;
     }
-    .save-file-button:hover {
+    .action-btn:hover {
       background-color: #333333;
     }
-    .save-status-msg {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: #8a8a8a;
-    }
-    .save-status-msg.saved {
+    .action-btn.linked {
+      background-color: #05200f;
+      border-color: #166534;
       color: #4ade80;
     }
+    .status-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+    }
+    .status-warn { color: #facc15; }
+    .status-done { color: #4ade80; }
+    .status-risk { color: #f87171; }
   </style>
 </head>
 <body>
@@ -550,7 +555,7 @@ export interface ICacheService {
     </section>
 
     <section>
-      <h2><span class="section-num">06.</span> Architectural Decisions & Self-Saving Selection</h2>
+      <h2><span class="section-num">06.</span> Architectural Decisions (Option 2 Direct File Save)</h2>
       <div class="decision-block">
         <div class="decision-header-row">
           <div class="decision-title">[DECISION] Select Invalidation Protocol Strategy:</div>
@@ -572,9 +577,10 @@ export interface ICacheService {
           </label>
         </div>
 
-        <div class="save-actions-row">
-          <button class="save-file-button" onclick="saveDecisionsToFile()">[SAVE DECISIONS TO HTML FILE]</button>
-          <span id="save-status" class="save-status-msg saved">[STATUS: PERMANENTLY SAVED TO HTML FILE]</span>
+        <div class="direct-file-toolbar">
+          <button id="link-file-btn" class="action-btn" onclick="linkSourceFile()">[LINK SOURCE FILE FOR DIRECT EDITS]</button>
+          <button class="action-btn" onclick="triggerSaveWorkflow()">[SYNC / SAVE NOW]</button>
+          <span id="file-link-status" class="status-text status-warn">[STATUS: UNLINKED — CLICK "LINK SOURCE FILE" TO ENABLE DIRECT DISK WRITES]</span>
         </div>
       </div>
     </section>
@@ -590,7 +596,45 @@ export interface ICacheService {
   </div>
 
   <script>
-    function handleOptionSelect(groupName, value, labelElement) {
+    let sourceFileHandle = null;
+
+    async function linkSourceFile() {
+      const statusEl = document.getElementById('file-link-status');
+      try {
+        if (!('showOpenFilePicker' in window)) {
+          if (statusEl) {
+            statusEl.innerText = '[STATUS: BROWSER RESTRICTED — USE MODERN CHROMIUM FOR DIRECT WRITES]';
+            statusEl.className = 'status-text status-risk';
+          }
+          return;
+        }
+        const [handle] = await window.showOpenFilePicker({
+          types: [{ description: 'HTML Document', accept: { 'text/html': ['.html'] } }],
+          multiple: false
+        });
+        sourceFileHandle = handle;
+        if (statusEl) {
+          statusEl.innerText = '[STATUS: LINKED TO ' + handle.name.toUpperCase() + ' (DIRECT WRITE ACTIVE)]';
+          statusEl.className = 'status-text status-done';
+        }
+        const linkBtn = document.getElementById('link-file-btn');
+        if (linkBtn) {
+          linkBtn.innerText = '[FILE LINKED: ' + handle.name + ']';
+          linkBtn.classList.add('linked');
+        }
+        await syncToDisk();
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error(err);
+          if (statusEl) {
+            statusEl.innerText = '[STATUS: PERMISSION DENIED OR ERROR]';
+            statusEl.className = 'status-text status-risk';
+          }
+        }
+      }
+    }
+
+    async function handleOptionSelect(groupName, value, labelElement) {
       const container = labelElement.closest('.decision-block');
       container.querySelectorAll('.option-label').forEach(el => el.classList.remove('selected'));
       labelElement.classList.add('selected');
@@ -606,6 +650,11 @@ export interface ICacheService {
         }
       });
 
+      updateDecisionMetadata();
+      await syncToDisk();
+    }
+
+    function updateDecisionMetadata() {
       const allDecisions = {};
       document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
         allDecisions[input.name] = input.value;
@@ -615,70 +664,46 @@ export interface ICacheService {
       if (meta) {
         meta.setAttribute('content', JSON.stringify({ decisions: allDecisions, updated_at: new Date().toISOString() }));
       }
+    }
 
-      const statusMsg = document.getElementById('save-status');
-      if (statusMsg) {
-        statusMsg.innerText = '[STATUS: UNPERSISTED SELECTION — CLICK SAVE BUTTON]';
-        statusMsg.className = 'save-status-msg';
+    async function syncToDisk() {
+      const statusEl = document.getElementById('file-link-status');
+      updateDecisionMetadata();
+
+      if (!sourceFileHandle) {
+        if (statusEl && !statusEl.classList.contains('status-done')) {
+          statusEl.innerText = '[STATUS: UNLINKED — CLICK "LINK SOURCE FILE" TO ENABLE DIRECT DISK WRITES]';
+          statusEl.className = 'status-text status-warn';
+        }
+        return false;
+      }
+
+      try {
+        const serializedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+        const writable = await sourceFileHandle.createWritable();
+        await writable.write(serializedHtml);
+        await writable.close();
+
+        if (statusEl) {
+          statusEl.innerText = '[STATUS: SAVED DIRECTLY TO ' + sourceFileHandle.name.toUpperCase() + ' AT ' + new Date().toLocaleTimeString() + ']';
+          statusEl.className = 'status-text status-done';
+        }
+        return true;
+      } catch (err) {
+        console.error(err);
+        if (statusEl) {
+          statusEl.innerText = '[STATUS: WRITE FAILED — RE-LINK FILE]';
+          statusEl.className = 'status-text status-risk';
+        }
+        return false;
       }
     }
 
-    async function saveDecisionsToFile() {
-      const statusMsg = document.getElementById('save-status');
-      
-      document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
-        if (input.checked) {
-          input.setAttribute('checked', 'checked');
-        } else {
-          input.removeAttribute('checked');
-        }
-      });
-
-      const allDecisions = {};
-      document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked').forEach(input => {
-        allDecisions[input.name] = input.value;
-      });
-
-      const meta = document.getElementById('omp-meta-decisions');
-      if (meta) {
-        meta.setAttribute('content', JSON.stringify({ decisions: allDecisions, saved_at: new Date().toISOString() }));
-      }
-
-      const serializedHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-
-      try {
-        if ('showSaveFilePicker' in window) {
-          const filename = window.location.pathname.split('/').pop() || 'plan.html';
-          const handle = await window.showSaveFilePicker({
-            suggestedName: filename,
-            types: [{ description: 'HTML Document', accept: { 'text/html': ['.html'] } }]
-          });
-          const writable = await handle.createWritable();
-          await writable.write(serializedHtml);
-          await writable.close();
-          if (statusMsg) {
-            statusMsg.innerText = '[STATUS: PERMANENTLY SAVED TO HTML FILE]';
-            statusMsg.className = 'save-status-msg saved';
-          }
-          return;
-        }
-      } catch (err) {
-        if (err.name === 'AbortError') return;
-      }
-
-      const blob = new Blob([serializedHtml], { type: 'text/html;charset=utf-8' });
-      const filename = window.location.pathname.split('/').pop() || 'plan.html';
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
-
-      if (statusMsg) {
-        statusMsg.innerText = '[STATUS: PERMANENTLY SAVED TO HTML FILE]';
-        statusMsg.className = 'save-status-msg saved';
+    async function triggerSaveWorkflow() {
+      if (!sourceFileHandle) {
+        await linkSourceFile();
+      } else {
+        await syncToDisk();
       }
     }
   </script>
