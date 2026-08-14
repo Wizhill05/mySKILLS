@@ -1,14 +1,19 @@
-# Enterprise HTML Plan & Review Skill for OMP (`/html`)
+# Monochrome HTML Plan & Review Skill for OMP (`/html`)
 
-A specialized, enterprise-grade skill and plugin for Oh My Pi (omp) to generate structured, dark-mode HTML architecture RFCs, implementation plans, code reviews, and decision matrices.
+A specialized skill and slash command plugin for Oh My Pi (omp) to generate rigorous, monochrome dark-mode HTML architecture RFCs, implementation plans, code reviews, and decision matrices.
 
-## Visual Design & Quality Standards
+## Visual Design & Color Rules
 
-- **Deep Obsidian Background**: Deep `#08080a` background with rich high-contrast typography.
-- **Helvetica Typography**: Embedded Helvetica Neue with an authoritative 38px document title and clean typographic hierarchy.
-- **Enterprise-Grade Diagrams**: Mermaid.js diagrams with structured architectural subgraphs, semantic shapes, and custom `classDef` styling.
+- **Pure Dark Neutral Background**: `#0c0c0c` page background, `#141414` / `#111111` containers and code blocks. Zero blue or purple tints.
+- **Solid White Typography**: Inter webfont with solid filled white headers (`#ffffff`, `-webkit-text-stroke: 0`, zero outline effects).
+- **Strictly 3 Accent Colors Only**:
+  - **RED**: `[ERROR]`, critical risks, blockers, failed tests.
+  - **YELLOW**: `[WARNING]`, performance alerts, review warnings.
+  - **GREEN**: `[SUCCESS]`, completed status, passed checks.
+  - Everything else is strictly monochrome neutral grays.
+- **Enterprise-Grade Diagrams**: Mermaid.js diagrams with structured architectural subgraphs in neutral dark charcoal styling.
 - **Deep Technical Rigor**: Detailed engineering context, concrete TypeScript/schema code blocks, thorough execution matrices, in-depth failure mode analysis, and comprehensive verification specifications.
-- **Sharp Brutalist Minimalism**: 0px border-radius across all elements (callouts, buttons, tables, badges, code blocks).
+- **Sharp Brutalist Minimalism**: 0px border-radius across all elements.
 - **Strictly Zero Emojis**: Clean technical indicators (`[PLAN]`, `[REVIEW]`, `[WARNING]`, `[ERROR]`, `[STATUS]`, `[DECISION]`).
 - **Interactive Decision Matrix**: Radio/checkbox selectors with a 1-click `[COPY DECISION TO CLIPBOARD]` button.
 - **Automated `omp-html/` Isolation**: Automatically creates `omp-html/` in the project root with a `.gitignore` (`*`).
