@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Review: PR #142 - Resume Generation & Schema Validation</title>
+    <!-- Mermaid.js for Embedded Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        darkMode: true,
+        background: '#0c0c0e',
+        primaryColor: '#1e293b',
+        primaryBorderColor: '#38bdf8',
+        primaryTextColor: '#f8fafc',
+        lineColor: '#94a3b8',
+        secondaryColor: '#18181b',
+        tertiaryColor: '#0f172a',
+        mainBkg: '#1e293b',
+        nodeBorder: '#38bdf8',
+        clusterBkg: '#141418',
+        clusterBorder: '#3f3f46',
+        defaultLinkColor: '#94a3b8',
+        titleColor: '#f8fafc',
+        edgeLabelBackground: '#0c0c0e',
+        actorBkg: '#1e293b',
+        actorBorder: '#38bdf8',
+        actorTextColor: '#f8fafc',
+        actorLineColor: '#64748b',
+        signalColor: '#94a3b8',
+        signalTextColor: '#f8fafc',
+        labelBoxBkgColor: '#1e293b',
+        labelBoxBorderColor: '#38bdf8',
+        labelTextColor: '#f8fafc',
+        loopTextColor: '#f8fafc',
+        noteBorderColor: '#ca8a04',
+        noteBkgColor: '#231c07',
+        noteTextColor: '#facc15',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      }
+    });
+  </script>
+  <style>
+    :root {
+      --bg-page: #09090b;
+      --bg-card: #121215;
+      --bg-card-hover: #18181c;
+      --bg-subtle: #1c1c21;
+      --border: #27272a;
+      --border-focus: #3f3f46;
+      --text-main: #f4f4f5;
+      --text-sub: #a1a1aa;
+      --text-muted: #71717a;
+      
+      --yellow-text: #facc15;
+      --yellow-bg: #231c07;
+      --yellow-border: #854d0e;
+      
+      --red-text: #f87171;
+      --red-bg: #2a0c0e;
+      --red-border: #991b1b;
+      
+      --green-text: #4ade80;
+      --green-bg: #062814;
+      --green-border: #166534;
+      
+      --cyan-text: #38bdf8;
+      --cyan-bg: #082136;
+      --cyan-border: #075985;
+      
+      --accent: #6366f1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      padding: 32px 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 920px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Header */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .header-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: #f43f5e;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Headings */
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 28px 0 14px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-main);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    ul {
+      margin-left: 20px;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+    li {
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    code {
+      font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #f43f5e;
+    }
+
+    /* Callouts */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      border: 1px solid;
+    }
+    .callout-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .callout-warning {
+      background-color: var(--yellow-bg);
+      border-color: var(--yellow-border);
+      color: var(--yellow-text);
+    }
+    .callout-error {
+      background-color: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red-text);
+    }
+    .callout-success {
+      background-color: var(--green-bg);
+      border-color: var(--green-border);
+      color: var(--green-text);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13.5px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: var(--bg-subtle);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tr:hover {
+      background-color: var(--bg-card-hover);
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      border: 1px solid;
+    }
+    .pill-risk { background: #450a0a; border-color: #991b1b; color: #f87171; }
+    .pill-warn { background: #422006; border-color: #854d0e; color: #facc15; }
+    .pill-pass { background: #052e16; border-color: #166534; color: #4ade80; }
+
+    .diagram-container {
+      background-color: #0c0c0e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <span class="header-badge">Security & Architecture Code Review</span>
+      <h1>PR #142: Resume Generation Pipeline</h1>
+      <div class="meta-row">
+        <span class="meta-item">👤 Author: @Wizhill05</span>
+        <span class="meta-item">🔍 Verdict: <span class="pill pill-warn">Changes Requested</span></span>
+        <span class="meta-item">📦 Scope: 4 files (+320, -45 lines)</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>1. Executive Summary</h2>
+      <p>PR introduces structured JSON schema enforcement for LLM resume output. Overall architecture is clean, but includes two critical concurrency/security issues that must be patched before merging.</p>
+    </section>
+
+    <section>
+      <h2>2. Generation Stream Sequence</h2>
+      <div class="diagram-container">
+        <div class="mermaid">
+          sequenceDiagram
+            autonumber
+            actor User
+            participant Frontend
+            participant Server as Fastify API
+            participant LLM as Model Gateway
+            
+            User->>Frontend: Click "Generate Resume"
+            Frontend->>Server: POST /api/v2/generate (Payload)
+            Server->>LLM: Stream completion (JSON Schema)
+            loop Chunk Stream
+              LLM-->>Server: Token delta
+              Server-->>Frontend: SSE stream chunk
+            end
+            Server->>Server: Validate Final JSON with Zod
+            Server-->>Frontend: Complete payload & DB ID
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. File Findings Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Issue / Note</th>
+            <th style="width: 110px;">Severity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>src/services/ai-generator.ts</code></td>
+            <td>Unbounded memory allocation during SSE chunk buffering.</td>
+            <td><span class="pill pill-risk">Critical</span></td>
+          </tr>
+          <tr>
+            <td><code>src/schemas/resume.ts</code></td>
+            <td>Missing strict validation for maximum array lengths in work history.</td>
+            <td><span class="pill pill-warn">Warning</span></td>
+          </tr>
+          <tr>
+            <td><code>src/routes/generate.ts</code></td>
+            <td>Rate limiting middleware applied correctly.</td>
+            <td><span class="pill pill-pass">Passed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. Detailed Findings</h2>
+      <div class="callout callout-error">
+        <div class="callout-title">⛔ Critical: Memory Leak in Stream Buffer (ai-generator.ts:88)</div>
+        Accumulator strings are not bounded. If the upstream LLM produces a non-terminating response, memory will grow unboundedly. Add a <code>MAX_BUFFER_BYTES = 256 * 1024</code> check.
+      </div>
+      <div class="callout callout-warning">
+        <div class="callout-title">⚠️ Warning: Missing Sanitization on Rendered HTML</div>
+        User-provided summary text inside JSON fields must be escaped before PDF canvas rendering to prevent SVG/CSS injection.
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Required Action Items</h2>
+      <ul>
+        <li>Implement <code>MAX_BUFFER_BYTES</code> boundary check in <code>src/services/ai-generator.ts</code>.</li>
+        <li>Add <code>.max(50)</code> to <code>work_experience</code> array in <code>src/schemas/resume.ts</code>.</li>
+        <li>Add integration regression test for aborted client streams.</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Implementation Plan: Distributed Cache & Real-Time Sync</title>
+    <!-- Mermaid.js for Embedded Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        darkMode: true,
+        background: '#0c0c0e',
+        primaryColor: '#1e293b',
+        primaryBorderColor: '#38bdf8',
+        primaryTextColor: '#f8fafc',
+        lineColor: '#94a3b8',
+        secondaryColor: '#18181b',
+        tertiaryColor: '#0f172a',
+        mainBkg: '#1e293b',
+        nodeBorder: '#38bdf8',
+        clusterBkg: '#141418',
+        clusterBorder: '#3f3f46',
+        defaultLinkColor: '#94a3b8',
+        titleColor: '#f8fafc',
+        edgeLabelBackground: '#0c0c0e',
+        actorBkg: '#1e293b',
+        actorBorder: '#38bdf8',
+        actorTextColor: '#f8fafc',
+        actorLineColor: '#64748b',
+        signalColor: '#94a3b8',
+        signalTextColor: '#f8fafc',
+        labelBoxBkgColor: '#1e293b',
+        labelBoxBorderColor: '#38bdf8',
+        labelTextColor: '#f8fafc',
+        loopTextColor: '#f8fafc',
+        noteBorderColor: '#ca8a04',
+        noteBkgColor: '#231c07',
+        noteTextColor: '#facc15',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      }
+    });
+  </script>
+  <style>
+    :root {
+      --bg-page: #09090b;
+      --bg-card: #121215;
+      --bg-card-hover: #18181c;
+      --bg-subtle: #1c1c21;
+      --border: #27272a;
+      --border-focus: #3f3f46;
+      --text-main: #f4f4f5;
+      --text-sub: #a1a1aa;
+      --text-muted: #71717a;
+      
+      --yellow-text: #facc15;
+      --yellow-bg: #231c07;
+      --yellow-border: #854d0e;
+      
+      --red-text: #f87171;
+      --red-bg: #2a0c0e;
+      --red-border: #991b1b;
+      
+      --green-text: #4ade80;
+      --green-bg: #062814;
+      --green-border: #166534;
+      
+      --cyan-text: #38bdf8;
+      --cyan-bg: #082136;
+      --cyan-border: #075985;
+      
+      --accent: #6366f1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      padding: 32px 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 920px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Header */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .header-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Headings */
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 28px 0 14px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e4e4e7;
+      margin: 18px 0 8px 0;
+    }
+
+    p {
+      color: var(--text-main);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+    li {
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+    li::marker {
+      color: var(--text-muted);
+    }
+
+    /* Code and Pre */
+    code {
+      font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #f43f5e;
+    }
+    pre {
+      background-color: #0c0c0e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+    pre code {
+      background: transparent;
+      border: none;
+      padding: 0;
+      color: #e4e4e7;
+      font-size: 13px;
+    }
+
+    /* Callouts */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      border: 1px solid;
+    }
+    .callout-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .callout-warning {
+      background-color: var(--yellow-bg);
+      border-color: var(--yellow-border);
+      color: var(--yellow-text);
+    }
+    .callout-error {
+      background-color: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red-text);
+    }
+    .callout-success {
+      background-color: var(--green-bg);
+      border-color: var(--green-border);
+      color: var(--green-text);
+    }
+    .callout-info {
+      background-color: var(--cyan-bg);
+      border-color: var(--cyan-border);
+      color: var(--cyan-text);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13.5px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: var(--bg-subtle);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.015);
+    }
+    tr:hover {
+      background-color: var(--bg-card-hover);
+    }
+
+    /* Status Pills */
+    .pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      border: 1px solid;
+    }
+    .pill-pending { background: #27272a; border-color: #3f3f46; color: #d4d4d8; }
+    .pill-progress { background: #172554; border-color: #1e40af; color: #60a5fa; }
+    .pill-done { background: #052e16; border-color: #166534; color: #4ade80; }
+    .pill-risk { background: #450a0a; border-color: #991b1b; color: #f87171; }
+
+    /* Mermaid diagrams container */
+    .diagram-container {
+      background-color: #0c0c0e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Interactive Decision Cards */
+    .decision-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+    .decision-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s ease;
+    }
+    .option-label:hover {
+      border-color: var(--border-focus);
+      background: var(--bg-card-hover);
+    }
+    .option-label input {
+      margin-top: 3px;
+      accent-color: var(--accent);
+    }
+    .option-content {
+      flex: 1;
+    }
+    .option-name {
+      font-weight: 600;
+      font-size: 13.5px;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+    .option-desc {
+      font-size: 12.5px;
+      color: var(--text-sub);
+    }
+
+    .copy-button {
+      background-color: #27272a;
+      color: #ffffff;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease;
+    }
+    .copy-button:hover {
+      background-color: #3f3f46;
+    }
+    .copy-preview {
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+      background: #000000;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #a1a1aa;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <span class="header-badge">Architecture & Implementation Plan</span>
+      <h1>Distributed Cache & Real-Time Sync</h1>
+      <div class="meta-row">
+        <span class="meta-item">📅 2026-08-14</span>
+        <span class="meta-item">🎯 Status: <span class="pill pill-progress">In Review</span></span>
+        <span class="meta-item">📁 Target: <code>backend/services/cache</code></span>
+      </div>
+    </header>
+
+    <section>
+      <h2>1. Objective</h2>
+      <p>Introduce Redis-backed multi-region caching layer for user session metadata and live document collaboration state to reduce PostgreSQL read load by 85%.</p>
+    </section>
+
+    <section>
+      <h2>2. Architecture Topology</h2>
+      <div class="diagram-container">
+        <div class="mermaid">
+          flowchart LR
+            Client[Web Client] -->|HTTP / WS| Gateway[API Gateway]
+            Gateway --> Cache[(Redis Cluster)]
+            Gateway --> App[Node.js / Bun Core]
+            App --> Cache
+            App -->|Persistent Fallback| DB[(PostgreSQL Primary)]
+            Cache -.->|Replication| ReadReplica[(Read Cache)]
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Phase Breakdown & File Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 70px;">Phase</th>
+            <th>Description & Scope</th>
+            <th style="width: 240px;">Touched Files</th>
+            <th style="width: 100px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>01</strong></td>
+            <td>Redis Connection Pool & Healthchecks</td>
+            <td><code>src/infra/redis.ts</code><br><code>src/config/env.ts</code></td>
+            <td><span class="pill pill-done">Completed</span></td>
+          </tr>
+          <tr>
+            <td><strong>02</strong></td>
+            <td>Cache Key Invalidation Middleware</td>
+            <td><code>src/middleware/cache.ts</code><br><code>src/services/session.ts</code></td>
+            <td><span class="pill pill-progress">In Progress</span></td>
+          </tr>
+          <tr>
+            <td><strong>03</strong></td>
+            <td>WebSocket Pub/Sub Broadcast Bridge</td>
+            <td><code>src/ws/pubsub.ts</code><br><code>src/ws/server.ts</code></td>
+            <td><span class="pill pill-pending">Pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. Risks & Warnings</h2>
+      <div class="callout callout-warning">
+        <div class="callout-title">⚠️ Warning: Cache Stampede Vulnerability</div>
+        High concurrency key expiration could cause database spikes. Implementing probabilistic early expiration (XFetch algorithm) in <code>src/infra/redis.ts</code>.
+      </div>
+      <div class="callout callout-error">
+        <div class="callout-title">⛔ Critical Blocker: Unencrypted Redis Connection</div>
+        Production environment requires TLS v1.3 with SNI verification. Plaintext TCP connections must be rejected at runtime boot.
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Architecture Decisions Required</h2>
+      <div class="decision-block">
+        <div class="decision-title">Select Invalidation Protocol:</div>
+        <div class="options-grid">
+          <label class="option-label">
+            <input type="radio" name="inval_strategy" value="Event-Driven (Redis PubSub)" checked onchange="updateDecision()">
+            <div class="option-content">
+              <div class="option-name">Option A: Event-Driven Redis PubSub (Recommended)</div>
+              <div class="option-desc">Sub-millisecond invalidation across all nodes; decoupled event bus.</div>
+            </div>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="inval_strategy" value="TTL Leases with Stale-While-Revalidate" onchange="updateDecision()">
+            <div class="option-content">
+              <div class="option-name">Option B: TTL Leases with Stale-While-Revalidate</div>
+              <div class="option-desc">Simpler architecture, zero inter-node sync, small window of eventual consistency.</div>
+            </div>
+          </label>
+        </div>
+        <button class="copy-button" onclick="copyDecision()">📋 Copy Decision to Clipboard</button>
+        <div class="copy-preview" id="decisionPreview">Selected: Option A: Event-Driven Redis PubSub (Recommended)</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>6. Verification Plan</h2>
+      <ul>
+        <li>Run unit tests: <code>bun test src/infra/redis.test.ts</code></li>
+        <li>Load test cache throughput: <code>k6 run tests/load/cache-bench.js</code></li>
+        <li>Verify failover behavior under Redis network partition simulation.</li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    function updateDecision() {
+      const selected = document.querySelector('input[name="inval_strategy"]:checked');
+      const preview = document.getElementById('decisionPreview');
+      if (selected && preview) {
+        preview.innerText = 'Decision: ' + selected.value;
+      }
+    }
+    function copyDecision() {
+      const preview = document.getElementById('decisionPreview');
+      if (preview) {
+        navigator.clipboard.writeText(preview.innerText);
+        alert('Copied decision to clipboard! Paste it into the OMP chat.');
+      }
+    }
+  </script>
+</body>
+</html>
